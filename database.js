@@ -59,6 +59,7 @@ const addColumnIfNotExists = (table, column, type) => {
 
 // Add new columns if they don't exist
 addColumnIfNotExists('tickets', 'ticket_number', 'INTEGER');
+addColumnIfNotExists('tickets', 'ticket_type', 'TEXT');
 addColumnIfNotExists('configs', 'transcript_channel_id', 'TEXT');
 addColumnIfNotExists('transcripts', 'ticket_number', 'INTEGER');
 addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
