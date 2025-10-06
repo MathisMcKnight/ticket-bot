@@ -146,7 +146,7 @@ module.exports = {
           .setCustomId('select_category_general_inquiry')
           .setPlaceholder('Select a category for General Inquiry tickets')
           .addOptions(
-            categories.map(category => ({
+            Array.from(categories.values()).slice(0, 25).map(category => ({
               label: category.name,
               value: category.id,
               description: `ID: ${category.id}`
@@ -173,7 +173,7 @@ module.exports = {
           .setCustomId('select_category_press_clearance')
           .setPlaceholder('Select a category for Press Clearance tickets')
           .addOptions(
-            categories.map(category => ({
+            Array.from(categories.values()).slice(0, 25).map(category => ({
               label: category.name,
               value: category.id,
               description: `ID: ${category.id}`
@@ -200,7 +200,7 @@ module.exports = {
           .setCustomId('select_category_agency_hotline')
           .setPlaceholder('Select a category for Agency Hotline tickets')
           .addOptions(
-            categories.map(category => ({
+            Array.from(categories.values()).slice(0, 25).map(category => ({
               label: category.name,
               value: category.id,
               description: `ID: ${category.id}`
@@ -227,7 +227,7 @@ module.exports = {
           .setCustomId('select_category_internal_affairs')
           .setPlaceholder('Select a category for Internal Affairs tickets')
           .addOptions(
-            categories.map(category => ({
+            Array.from(categories.values()).slice(0, 25).map(category => ({
               label: category.name,
               value: category.id,
               description: `ID: ${category.id}`
@@ -254,7 +254,7 @@ module.exports = {
           .setCustomId('select_escalation_category')
           .setPlaceholder('Select the escalation category')
           .addOptions(
-            categories.map(category => ({
+            Array.from(categories.values()).slice(0, 25).map(category => ({
               label: category.name,
               value: category.id,
               description: `ID: ${category.id}`
@@ -286,7 +286,7 @@ module.exports = {
           .setCustomId(`select_role_${ticketType}`)
           .setPlaceholder('Select the manager role for this ticket type')
           .addOptions(
-            roles.slice(0, 25).map(role => ({
+            Array.from(roles.values()).slice(0, 25).map(role => ({
               label: role.name,
               value: role.id,
               description: `ID: ${role.id}`
@@ -346,7 +346,7 @@ module.exports = {
           .setCustomId('select_transcript_channel')
           .setPlaceholder('Select the transcript channel')
           .addOptions(
-            textChannels.slice(0, 25).map(channel => ({
+            Array.from(textChannels.values()).slice(0, 25).map(channel => ({
               label: channel.name,
               value: channel.id,
               description: `ID: ${channel.id}`
