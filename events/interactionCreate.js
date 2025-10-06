@@ -202,26 +202,5 @@ module.exports = {
       }
     }
 
-    if (interaction.isButton() && interaction.customId.startsWith('view_transcript_')) {
-      const db = require('../database');
-      const transcriptId = interaction.customId.replace('view_transcript_', '');
-      const transcript = db.prepare(`SELECT * FROM transcripts WHERE id = ?`).get(transcriptId);
-
-      if (!transcript) {
-        return interaction.reply({ content: '❌ Transcript not found.', ephemeral: true });
-      }
-
-      const transcriptEmbed = new EmbedBuilder()
-        .setTitle(`📜 Ticket #${transcript.ticket_number} - Full Transcript`)
-        .setDescription(`**User:** <@${transcript.user_id}> (${transcript.user_tag})\n**Type:** ${transcript.ticket_type}\n**Closed by:** ${transcript.user_tag}\n**Close Reason:** ${transcript.close_reason}\n**Closed:** <t:${Math.floor(new Date(transcript.closed_at).getTime() / 1000)}:F>\n\n**Messages:**\n\`\`\`\n${transcript.messages.slice(0, 3900)}\n\`\`\``)
-        .setColor('#0A235B')
-        .setTimestamp();
-
-      if (transcript.messages.length > 3900) {
-        transcriptEmbed.setFooter({ text: 'Transcript truncated due to Discord limits. Full transcript available to admins via /ticket transcript.' });
-      }
-
-      await interaction.reply({ embeds: [transcriptEmbed], ephemeral: true });
-    }
   },
 };
