@@ -66,6 +66,17 @@ addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
 addColumnIfNotExists('transcripts', 'token', 'TEXT');
 addColumnIfNotExists('transcripts', 'file_path', 'TEXT');
 
+// Add ticket type-specific categories and roles
+addColumnIfNotExists('configs', 'general_inquiry_category_id', 'TEXT');
+addColumnIfNotExists('configs', 'general_inquiry_role_id', 'TEXT');
+addColumnIfNotExists('configs', 'press_clearance_category_id', 'TEXT');
+addColumnIfNotExists('configs', 'press_clearance_role_id', 'TEXT');
+addColumnIfNotExists('configs', 'agency_hotline_category_id', 'TEXT');
+addColumnIfNotExists('configs', 'agency_hotline_role_id', 'TEXT');
+addColumnIfNotExists('configs', 'internal_affairs_category_id', 'TEXT');
+addColumnIfNotExists('configs', 'internal_affairs_role_id', 'TEXT');
+addColumnIfNotExists('configs', 'escalation_category_id', 'TEXT');
+
 // Create unique index for token column if it doesn't exist
 try {
   db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_transcripts_token ON transcripts(token)`);
