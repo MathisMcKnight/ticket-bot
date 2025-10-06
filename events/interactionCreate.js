@@ -280,8 +280,21 @@ module.exports = {
         
         setupState.set(interaction.user.id, { ticketType, categoryId });
 
-        const roles = interaction.guild.roles.cache.filter(r => !r.managed && r.name !== '@everyone');
+        await interaction.guild.roles.fetch();
         
+        const roles = interaction.guild.roles.cache.filter(r => 
+          !r.managed && 
+          r.name !== '@everyone' && 
+          !r.permissions.has(PermissionFlagsBits.Administrator)
+        );
+        
+        if (roles.size === 0) {
+          return interaction.update({ 
+            content: '❌ No suitable roles found. Create a non-administrator role first.', 
+            components: [] 
+          });
+        }
+
         const selectMenu = new StringSelectMenuBuilder()
           .setCustomId(`select_role_${ticketType}`)
           .setPlaceholder('Select the manager role for this ticket type')
@@ -296,7 +309,7 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(selectMenu);
         
         return await interaction.update({
-          content: `✅ Category selected: <#${categoryId}>\n\n👥 **Step 2/2:** Select the manager role:`,
+          content: `✅ Category selected: <#${categoryId}>\n\n👥 **Step 2/2:** Select the manager role (non-admin roles):`,
           components: [row]
         });
       }
