@@ -3,12 +3,14 @@
   EmbedBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  PermissionFlagsBits,
 } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('panel')
-    .setDescription('Posts the ticket panel'),
+    .setDescription('Posts the ticket panel')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
     const embed = new EmbedBuilder()
       .setTitle('🎟️ Ticket Panel')
