@@ -9,7 +9,8 @@
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('panel')
-    .setDescription('Posts the ticket panel'),
+    .setDescription('Posts the ticket panel')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
   async execute(interaction) {
     const requiredRoleId = '1165786013730361437';
     

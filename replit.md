@@ -26,7 +26,7 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 5.  **Web-Based Transcripts**: Generates and hosts HTML transcripts viewable in browsers via unique, token-based URLs.
 6.  **DM Notifications & Public Transcripts**: Users receive DM notifications with transcript links upon ticket closure, and transcript links are also posted in a designated public channel.
 7.  **Blacklist Management**: Admins can blacklist/unblacklist users with reasons and view the blacklist.
-8.  **Admin-Only Controls**: Key management actions (Close, Claim, Delete) are restricted to administrators and require specific permissions or roles.
+8.  **Enhanced Command Security**: All commands require "Manage Messages" permission to view, completely hidden from general public. Setup commands restricted to White House Chief of Staff role only.
 9.  **Required Close Reasons**: All ticket closures necessitate a reason (5-500 characters) recorded in transcripts.
 10. **Automated Channel Deletion**: Closed tickets result in automatic channel deletion after transcript archiving.
 11. **Transcript History**: Admins can view transcript metadata for any user.

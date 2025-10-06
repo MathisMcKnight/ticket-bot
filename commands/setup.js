@@ -4,7 +4,8 @@ const db = require('../database');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription('Configure ticket system - opens setup wizard'),
+    .setDescription('Configure ticket system - opens setup wizard')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
   async execute(interaction) {
     const requiredRoleId = '1165786013730361437';
