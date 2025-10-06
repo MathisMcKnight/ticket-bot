@@ -6,6 +6,7 @@ const db = new Database('./data.db');
 db.exec(`
   CREATE TABLE IF NOT EXISTS tickets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket_number INTEGER,
     user_id TEXT,
     channel_id TEXT,
     status TEXT,
@@ -16,7 +17,8 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS configs (
     guild_id TEXT PRIMARY KEY,
     category_id TEXT,
-    support_role_id TEXT
+    support_role_id TEXT,
+    transcript_channel_id TEXT
   );
 
   CREATE TABLE IF NOT EXISTS blacklists (
@@ -28,11 +30,13 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS transcripts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ticket_id INTEGER,
+    ticket_number INTEGER,
     channel_id TEXT,
     user_id TEXT,
     user_tag TEXT,
     ticket_type TEXT,
     messages TEXT,
+    close_reason TEXT,
     closed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ticket_id) REFERENCES tickets(id)
   );
