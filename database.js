@@ -8,7 +8,9 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id TEXT,
     channel_id TEXT,
-    status TEXT
+    status TEXT,
+    ticket_type TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
   CREATE TABLE IF NOT EXISTS configs (
@@ -18,7 +20,21 @@ db.exec(`
   );
 
   CREATE TABLE IF NOT EXISTS blacklists (
-    user_id TEXT PRIMARY KEY
+    user_id TEXT PRIMARY KEY,
+    reason TEXT,
+    blacklisted_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS transcripts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket_id INTEGER,
+    channel_id TEXT,
+    user_id TEXT,
+    user_tag TEXT,
+    ticket_type TEXT,
+    messages TEXT,
+    closed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id)
   );
 `);
 
