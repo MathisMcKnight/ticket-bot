@@ -25,17 +25,22 @@ module.exports = {
         {
           label: 'General Inquiry',
           description: 'Ask a general question',
-          value: 'general',
+          value: 'general_inquiry',
         },
         {
-          label: 'Support Request',
-          description: 'Get help from the support team',
-          value: 'support',
+          label: 'Press Clearance request',
+          description: 'Request press clearance',
+          value: 'press_clearance',
         },
         {
-          label: 'Escalation',
-          description: 'Escalate to White House Chief of Staff',
-          value: 'escalate',
+          label: 'Agency Directorate Hotline',
+          description: 'Contact the Agency Directorate',
+          value: 'agency_hotline',
+        },
+        {
+          label: 'White House Internal Affairs Hotline',
+          description: 'Report internal affairs matter',
+          value: 'internal_affairs',
         },
       ]);
 
