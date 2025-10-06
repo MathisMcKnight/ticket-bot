@@ -42,4 +42,25 @@ db.exec(`
   );
 `);
 
+// Migration: Add missing columns to existing tables
+const addColumnIfNotExists = (table, column, type) => {
+  try {
+    const checkColumn = db.prepare(`PRAGMA table_info(${table})`).all();
+    const columnExists = checkColumn.some(col => col.name === column);
+    
+    if (!columnExists) {
+      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+      console.log(`✅ Added column ${column} to ${table}`);
+    }
+  } catch (error) {
+    console.error(`Error adding column ${column} to ${table}:`, error.message);
+  }
+};
+
+// Add new columns if they don't exist
+addColumnIfNotExists('tickets', 'ticket_number', 'INTEGER');
+addColumnIfNotExists('configs', 'transcript_channel_id', 'TEXT');
+addColumnIfNotExists('transcripts', 'ticket_number', 'INTEGER');
+addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
+
 module.exports = db;
