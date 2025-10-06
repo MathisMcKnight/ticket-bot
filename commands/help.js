@@ -8,15 +8,16 @@ module.exports = {
   async execute(interaction) {
     const embed = new EmbedBuilder()
       .setTitle('📚 Ticket Bot Commands')
-      .setDescription('**All commands require Administrator permissions**\n\n**✨ Features:**\n• Automatic ticket numbering (#1, #2, etc.)\n• Web-based transcripts viewable in browser\n• Click buttons to open transcripts instantly\n• Automatic DM notifications with view links\n• Channels deleted after archiving')
+      .setDescription('**All commands require Administrator permissions**\n\n**✨ Features:**\n• 4 ticket types with dedicated categories & roles\n• Automatic ticket numbering (#1, #2, etc.)\n• Web-based transcripts viewable in browser\n• Click buttons to open transcripts instantly\n• Automatic DM notifications with view links\n• Escalation system to White House Chief of Staff')
       .setColor('#0A235B')
       .addFields(
-        { name: '⚙️ Setup Commands', value: '`/setup` - Configure ticket system (category, support role, transcript channel)\n`/panel` - Create ticket panel for users', inline: false },
-        { name: '🎫 Ticket Management', value: '`/ticket admin` - List all open tickets with numbers\n`/ticket delete <channel> <reason>` - Delete ticket and send transcript link\n`/ticket close-all <reason>` - Close all tickets and send transcript links', inline: false },
+        { name: '⚙️ Setup Commands', value: '`/setup` - Configure ticket system (opens setup wizard)\n`/panel` - Create ticket panel for users', inline: false },
+        { name: '🎫 Ticket Types', value: '• General Inquiry\n• Press Clearance request\n• Agency Directorate Hotline\n• White House Internal Affairs Hotline\n• Escalation (via `/ticket escalate`)', inline: false },
+        { name: '🛠️ Ticket Management', value: '`/ticket admin` - List all open tickets\n`/ticket escalate` - Escalate ticket to Chief of Staff\n`/ticket delete <channel> <reason>` - Delete ticket and send transcript\n`/ticket close-all <reason>` - Close all tickets', inline: false },
         { name: '🚫 Blacklist Management', value: '`/ticket blacklist <user> <reason>` - Blacklist user\n`/ticket unblacklist <user>` - Remove from blacklist\n`/ticket list-blacklist` - View all blacklisted users', inline: false },
-        { name: '📜 Transcripts', value: '`/ticket transcript <user>` - View transcript history\nClick "View Transcript" button to open in browser\nTranscripts auto-open in default browser', inline: false }
+        { name: '📜 Transcripts', value: '`/ticket transcript <user>` - View transcript history\nClick "View Transcript" button to open in browser', inline: false }
       )
-      .setFooter({ text: 'White House Systems Ticket Bot • Click buttons to view transcripts instantly!' });
+      .setFooter({ text: 'White House Systems Ticket Bot • Multi-type routing with escalation support' });
 
     await interaction.reply({
       embeds: [embed],

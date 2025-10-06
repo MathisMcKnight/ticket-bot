@@ -123,14 +123,14 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(reasonInput);
         modal.addComponents(row);
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
 
       if (interaction.customId === 'claim_ticket') {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
           return interaction.reply({ content: '❌ Only administrators can claim tickets.', ephemeral: true });
         }
-        await interaction.reply({ content: `🎟️ Ticket claimed by ${interaction.user.tag}` });
+        return await interaction.reply({ content: `🎟️ Ticket claimed by ${interaction.user.tag}` });
       }
 
       if (interaction.customId === 'setup_general_inquiry') {
@@ -157,7 +157,7 @@ module.exports = {
           new ActionRowBuilder().addComponents(roleInput)
         );
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
 
       if (interaction.customId === 'setup_press_clearance') {
@@ -184,7 +184,7 @@ module.exports = {
           new ActionRowBuilder().addComponents(roleInput)
         );
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
 
       if (interaction.customId === 'setup_agency_hotline') {
@@ -211,7 +211,7 @@ module.exports = {
           new ActionRowBuilder().addComponents(roleInput)
         );
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
 
       if (interaction.customId === 'setup_internal_affairs') {
@@ -238,7 +238,7 @@ module.exports = {
           new ActionRowBuilder().addComponents(roleInput)
         );
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
 
       if (interaction.customId === 'setup_escalation_transcript') {
@@ -265,7 +265,7 @@ module.exports = {
           new ActionRowBuilder().addComponents(transcriptChannelInput)
         );
 
-        await interaction.showModal(modal);
+        return await interaction.showModal(modal);
       }
     }
 
