@@ -35,24 +35,33 @@ This is a Discord bot designed to manage support tickets within Discord servers.
 ```
 
 ### Features
-1. **Ticket Creation** - Users can create support tickets via interactive panel with automatic numbering
-2. **Ticket Numbering** - Automatic sequential ticket numbers (#1, #2, #3, etc.) displayed in channels and embeds
-3. **Ticket Type Tracking** - Tracks ticket types (General Inquiry, Support Request, Escalation)
-4. **Web-Based Transcripts** - Transcripts hosted on Express server, viewable directly in browser
-5. **One-Click Viewing** - Click "View Transcript" button to instantly open transcript in default browser
-6. **Automatic DM Notifications** - Users receive clickable transcript links via DM when tickets close
-7. **Public Transcript Channel** - Transcript links posted in designated channel with view buttons
-8. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
-9. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
-10. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
-11. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
-12. **Channel Deletion** - Closed tickets are automatically deleted after transcript archiving
-13. **Transcript History** - View transcript metadata for any user with ticket numbers and close reasons
-14. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
+1. **Multi-Type Ticket System** - Four distinct ticket types with dedicated categories and manager roles
+2. **Ticket Types** - General Inquiry, Press Clearance request, Agency Directorate Hotline, White House Internal Affairs Hotline
+3. **Escalation System** - Escalate any ticket to White House Chief of Staff with dedicated category
+4. **Ticket Numbering** - Automatic sequential ticket numbers (#1, #2, #3, etc.) displayed in channels and embeds
+5. **Smart Routing** - Tickets automatically route to correct category and ping appropriate manager role
+6. **Web-Based Transcripts** - Transcripts hosted on Express server, viewable directly in browser
+7. **One-Click Viewing** - Click "View Transcript" button to instantly open transcript in default browser
+8. **Automatic DM Notifications** - Users receive clickable transcript links via DM when tickets close
+9. **Public Transcript Channel** - Transcript links posted in designated channel with view buttons
+10. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
+11. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
+12. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
+13. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
+14. **Channel Deletion** - Closed tickets are automatically deleted after transcript archiving
+15. **Transcript History** - View transcript metadata for any user with ticket numbers and close reasons
+16. **Modal-Based Setup** - Interactive setup wizard with button-triggered modals for easy configuration
 
 ### Database Schema
 - **tickets** - Stores ticket information (id, ticket_number, user_id, channel_id, status, ticket_type, created_at)
-- **configs** - Server configurations (guild_id, category_id, support_role_id, transcript_channel_id)
+- **configs** - Server configurations with type-specific categories and roles:
+  - guild_id (PRIMARY KEY)
+  - general_inquiry_category_id, general_inquiry_role_id
+  - press_clearance_category_id, press_clearance_role_id
+  - agency_hotline_category_id, agency_hotline_role_id
+  - internal_affairs_category_id, internal_affairs_role_id
+  - escalation_category_id
+  - transcript_channel_id
 - **blacklists** - Blacklisted users (user_id, reason, blacklisted_at)
 - **transcripts** - Transcript metadata (id, ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, token, file_path, closed_at)
 
@@ -90,12 +99,13 @@ The bot runs as a background workflow named "Discord Bot" that executes `npm sta
 All commands require Administrator permissions:
 
 ### Setup Commands
-- `/setup <category> <supportrole> <transcriptchannel>` - Configure the ticket system (category, support role, and transcript channel)
+- `/setup` - Configure the ticket system (opens interactive setup wizard with buttons for each ticket type)
 - `/panel` - Create ticket panel for users to open tickets
 - `/help` - Display all available commands with descriptions
 
 ### Ticket Management Commands
 - `/ticket admin` - List all open tickets with ticket numbers and types
+- `/ticket escalate` - Escalate current ticket to White House Chief of Staff (moves to escalation category, pings role 1165786013730361437)
 - `/ticket blacklist <user> <reason>` - Blacklist a user from creating tickets
 - `/ticket unblacklist <user>` - Remove a user from the blacklist
 - `/ticket list-blacklist` - Show all blacklisted users with reasons
@@ -105,7 +115,44 @@ All commands require Administrator permissions:
 
 ## Recent Changes
 
-### 2025-10-06 (Latest Update): Web-Based Transcript System
+### 2025-10-06 (Latest Update): Multi-Type Ticket System with Escalation
+- **🎫 Four Ticket Types**
+  - General Inquiry - For general questions
+  - Press Clearance request - For press clearance requests
+  - Agency Directorate Hotline - For agency directorate matters
+  - White House Internal Affairs Hotline - For internal affairs reporting
+  
+- **🔀 Smart Routing System**
+  - Each ticket type has dedicated category and manager role
+  - Tickets automatically route to correct category based on type
+  - Correct manager role automatically pinged when ticket created
+  - Configuration stored per-type in database
+  
+- **⚡ Escalation System**
+  - /ticket escalate command moves ticket to escalation category
+  - Automatically pings White House Chief of Staff role (1165786013730361437)
+  - Updates ticket type to "Escalation" in database
+  - Only works on open tickets in ticket channels
+  
+- **🎨 Modal-Based Setup Wizard**
+  - /setup command opens interactive wizard with 5 buttons
+  - Each button opens modal for configuring that ticket type
+  - Separate modals for General Inquiry, Press Clearance, Agency Hotline, Internal Affairs
+  - Final modal configures escalation category and transcript channel
+  - User-friendly: prompts admin to copy-paste category/role IDs
+  
+- **🔧 Database Schema Updates**
+  - Added type-specific columns to configs table
+  - Stores category_id and role_id for each of 4 ticket types
+  - Stores escalation_category_id for escalation routing
+  - Migrations run automatically on bot startup
+  
+- **🐛 Bug Fixes**
+  - Fixed button handler flow control to prevent fall-through
+  - All button handlers now properly return after responding
+  - Setup modals now display correctly without errors
+
+### 2025-10-06 (Previous Update): Web-Based Transcript System
 - **🌐 Express Web Server**
   - Added Express server running on port 5000 to host transcripts
   - Transcripts accessible via secure token-based URLs
