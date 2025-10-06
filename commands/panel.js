@@ -9,9 +9,17 @@
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('panel')
-    .setDescription('Posts the ticket panel')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Posts the ticket panel'),
   async execute(interaction) {
+    const requiredRoleId = '1165786013730361437';
+    
+    if (!interaction.member.roles.cache.has(requiredRoleId)) {
+      return interaction.reply({ 
+        content: '❌ You do not have permission to use this command. Only White House Chief of Staff can create ticket panels.', 
+        ephemeral: true 
+      });
+    }
+
     const embed = new EmbedBuilder()
       .setTitle('🎟️ Ticket Panel')
       .setDescription('Select a category below to open a support ticket.')

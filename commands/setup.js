@@ -4,10 +4,18 @@ const db = require('../database');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription('Configure ticket system - opens setup wizard')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Configure ticket system - opens setup wizard'),
 
   async execute(interaction) {
+    const requiredRoleId = '1165786013730361437';
+    
+    if (!interaction.member.roles.cache.has(requiredRoleId)) {
+      return interaction.reply({ 
+        content: '❌ You do not have permission to use this command. Only White House Chief of Staff can configure the ticket system.', 
+        ephemeral: true 
+      });
+    }
+
     const embed = new EmbedBuilder()
       .setTitle('🎫 Ticket System Setup')
       .setDescription('Click the buttons below to configure each ticket type and the transcript channel.\n\n**Setup Steps:**\n1. Configure General Inquiry\n2. Configure Press Clearance\n3. Configure Agency Hotline\n4. Configure Internal Affairs\n5. Configure Escalation & Transcript')
