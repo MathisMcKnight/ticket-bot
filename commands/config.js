@@ -109,104 +109,134 @@ module.exports = {
       const category = interaction.options.getChannel('category');
       const role = interaction.options.getRole('role');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          general_inquiry_category_id = excluded.general_inquiry_category_id,
-          general_inquiry_role_id = excluded.general_inquiry_role_id
-      `).run(interaction.guild.id, category.id, role.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
+          VALUES ($1, $2, $3)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            general_inquiry_category_id = EXCLUDED.general_inquiry_category_id,
+            general_inquiry_role_id = EXCLUDED.general_inquiry_role_id
+        `, [interaction.guild.id, category.id, role.id]);
 
-      return interaction.reply({ 
-        content: `✅ **General Inquiry** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **General Inquiry** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring general inquiry:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
 
     if (sub === 'press-clearance') {
       const category = interaction.options.getChannel('category');
       const role = interaction.options.getRole('role');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          press_clearance_category_id = excluded.press_clearance_category_id,
-          press_clearance_role_id = excluded.press_clearance_role_id
-      `).run(interaction.guild.id, category.id, role.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
+          VALUES ($1, $2, $3)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            press_clearance_category_id = EXCLUDED.press_clearance_category_id,
+            press_clearance_role_id = EXCLUDED.press_clearance_role_id
+        `, [interaction.guild.id, category.id, role.id]);
 
-      return interaction.reply({ 
-        content: `✅ **Press Clearance** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **Press Clearance** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring press clearance:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
 
     if (sub === 'agency-hotline') {
       const category = interaction.options.getChannel('category');
       const role = interaction.options.getRole('role');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, agency_hotline_category_id, agency_hotline_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          agency_hotline_category_id = excluded.agency_hotline_category_id,
-          agency_hotline_role_id = excluded.agency_hotline_role_id
-      `).run(interaction.guild.id, category.id, role.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, agency_hotline_category_id, agency_hotline_role_id) 
+          VALUES ($1, $2, $3)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            agency_hotline_category_id = EXCLUDED.agency_hotline_category_id,
+            agency_hotline_role_id = EXCLUDED.agency_hotline_role_id
+        `, [interaction.guild.id, category.id, role.id]);
 
-      return interaction.reply({ 
-        content: `✅ **Agency Hotline** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **Agency Hotline** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring agency hotline:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
 
     if (sub === 'internal-affairs') {
       const category = interaction.options.getChannel('category');
       const role = interaction.options.getRole('role');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          internal_affairs_category_id = excluded.internal_affairs_category_id,
-          internal_affairs_role_id = excluded.internal_affairs_role_id
-      `).run(interaction.guild.id, category.id, role.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
+          VALUES ($1, $2, $3)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            internal_affairs_category_id = EXCLUDED.internal_affairs_category_id,
+            internal_affairs_role_id = EXCLUDED.internal_affairs_role_id
+        `, [interaction.guild.id, category.id, role.id]);
 
-      return interaction.reply({ 
-        content: `✅ **Internal Affairs** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **Internal Affairs** configured!\n📂 Category: ${category}\n👥 Manager Role: ${role}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring internal affairs:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
 
     if (sub === 'escalation-category') {
       const category = interaction.options.getChannel('category');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, escalation_category_id) 
-        VALUES (?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          escalation_category_id = excluded.escalation_category_id
-      `).run(interaction.guild.id, category.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, escalation_category_id) 
+          VALUES ($1, $2)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            escalation_category_id = EXCLUDED.escalation_category_id
+        `, [interaction.guild.id, category.id]);
 
-      return interaction.reply({ 
-        content: `✅ **Escalation Category** configured!\n📂 Category: ${category}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **Escalation Category** configured!\n📂 Category: ${category}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring escalation category:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
 
     if (sub === 'transcript-channel') {
       const channel = interaction.options.getChannel('channel');
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, transcript_channel_id) 
-        VALUES (?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          transcript_channel_id = excluded.transcript_channel_id
-      `).run(interaction.guild.id, channel.id);
+      try {
+        await db.query(`
+          INSERT INTO configs (guild_id, transcript_channel_id) 
+          VALUES ($1, $2)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            transcript_channel_id = EXCLUDED.transcript_channel_id
+        `, [interaction.guild.id, channel.id]);
 
-      return interaction.reply({ 
-        content: `✅ **Transcript Channel** configured!\n📝 Channel: ${channel}`, 
-        ephemeral: true 
-      });
+        return interaction.reply({ 
+          content: `✅ **Transcript Channel** configured!\n📝 Channel: ${channel}`, 
+          ephemeral: true 
+        });
+      } catch (error) {
+        console.error('Error configuring transcript channel:', error);
+        return interaction.reply({ content: '❌ Error saving configuration.', ephemeral: true });
+      }
     }
   },
 };
