@@ -71,6 +71,11 @@ module.exports = {
         .addUserOption(o =>
           o.setName('user').setDescription('User to view transcripts for').setRequired(true)
         )
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('escalate')
+        .setDescription('Escalate current ticket to White House Chief of Staff')
     ),
 
   async execute(interaction) {
@@ -374,6 +379,44 @@ module.exports = {
         .setFooter({ text: `Total: ${transcripts.length} transcript(s). HTML transcripts available in ${config?.transcript_channel_id ? '#transcript-channel' : 'transcript channel'}.` });
 
       await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    if (sub === 'escalate') {
+      const ticket = db.prepare(`SELECT * FROM tickets WHERE channel_id = ?`).get(interaction.channel.id);
+      
+      if (!ticket) {
+        return interaction.reply({ content: '❌ This command can only be used in a ticket channel.', ephemeral: true });
+      }
+
+      if (ticket.status !== 'open') {
+        return interaction.reply({ content: '❌ This ticket is already closed.', ephemeral: true });
+      }
+
+      const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+
+      if (!config || !config.escalation_category_id) {
+        return interaction.reply({ content: '⚠️ Escalation category not configured. Please ask an admin to run /setup.', ephemeral: true });
+      }
+
+      const escalationRoleId = '1165786013730361437';
+      const escalationCategory = interaction.guild.channels.cache.get(config.escalation_category_id);
+
+      if (!escalationCategory) {
+        return interaction.reply({ content: '❌ Escalation category not found.', ephemeral: true });
+      }
+
+      await interaction.channel.setParent(escalationCategory.id);
+
+      db.prepare(`UPDATE tickets SET ticket_type = 'Escalation' WHERE channel_id = ?`).run(interaction.channel.id);
+
+      const embed = new EmbedBuilder()
+        .setTitle('⚡ Ticket Escalated')
+        .setDescription(`This ticket has been escalated to the White House Chief of Staff.\n\n**Escalated by:** ${interaction.user}`)
+        .setColor('#FF6B00')
+        .setTimestamp();
+
+      await interaction.channel.send({ content: `<@&${escalationRoleId}>`, embeds: [embed] });
+      await interaction.reply({ content: '✅ Ticket escalated successfully!', ephemeral: true });
     }
   },
 };
