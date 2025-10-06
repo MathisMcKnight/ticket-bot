@@ -193,12 +193,28 @@ module.exports = {
 
       await interaction.deferReply({ ephemeral: true });
 
+      const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+      
       let closed = 0;
       for (const ticket of rows) {
         try {
           const channel = await interaction.guild.channels.fetch(ticket.channel_id);
           if (channel) {
-            await channel.setLocked(true);
+            await channel.permissionOverwrites.edit(interaction.guild.id, {
+              SendMessages: false
+            });
+            
+            await channel.permissionOverwrites.edit(ticket.user_id, {
+              SendMessages: false
+            });
+            
+            if (config && config.support_role_id) {
+              await channel.permissionOverwrites.edit(config.support_role_id, {
+                SendMessages: false
+              });
+            }
+            
+            await channel.send('🔒 This ticket has been closed and locked. No one can send messages anymore.');
             db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(ticket.channel_id);
             closed++;
           }

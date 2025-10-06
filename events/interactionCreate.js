@@ -117,12 +117,47 @@ module.exports = {
 
             db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(interaction.channel.id);
 
+            const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+            
+            await interaction.channel.permissionOverwrites.edit(interaction.guild.id, {
+              SendMessages: false
+            });
+            
+            await interaction.channel.permissionOverwrites.edit(ticket.user_id, {
+              SendMessages: false
+            });
+            
+            if (config && config.support_role_id) {
+              await interaction.channel.permissionOverwrites.edit(config.support_role_id, {
+                SendMessages: false
+              });
+            }
+
+            await interaction.channel.send('🔒 This ticket has been closed and locked. No one can send messages anymore.');
             await interaction.editReply({ content: `✅ Ticket closed and transcript saved (${allMessages.length} messages).` });
-            await interaction.channel.setLocked(true);
           } catch (error) {
             console.error('Error saving transcript:', error);
+            
+            try {
+              const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+              
+              await interaction.channel.permissionOverwrites.edit(interaction.guild.id, {
+                SendMessages: false
+              });
+              await interaction.channel.permissionOverwrites.edit(ticket.user_id, {
+                SendMessages: false
+              });
+              
+              if (config && config.support_role_id) {
+                await interaction.channel.permissionOverwrites.edit(config.support_role_id, {
+                  SendMessages: false
+                });
+              }
+            } catch (lockError) {
+              console.error('Error locking channel:', lockError);
+            }
+            
             await interaction.editReply({ content: '✅ Ticket closed (transcript save failed).' });
-            await interaction.channel.setLocked(true);
           }
         }
       }
