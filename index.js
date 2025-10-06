@@ -69,6 +69,7 @@ app.get('/transcripts/:token', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
+  const domain = process.env.DOMAIN || process.env.REPLIT_DEV_DOMAIN || process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:5000';
   console.log(`🌐 Transcript server running on port ${PORT}`);
-  console.log(`📄 Transcripts accessible at: https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/:token`);
+  console.log(`📄 Transcripts accessible at: https://${domain}/transcripts/:token`);
 });

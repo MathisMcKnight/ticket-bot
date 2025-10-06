@@ -311,7 +311,8 @@ module.exports = {
 
         db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(interaction.channel.id);
 
-        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const domain = process.env.DOMAIN || process.env.REPLIT_DEV_DOMAIN || process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:5000';
+        const transcriptUrl = `https://${domain}/transcripts/${token}`;
         const viewButton = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setLabel('📄 View Transcript')
