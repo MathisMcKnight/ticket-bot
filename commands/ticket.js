@@ -46,11 +46,17 @@ module.exports = {
         .addChannelOption(o =>
           o.setName('channel').setDescription('Ticket channel to delete').setRequired(true)
         )
+        .addStringOption(o =>
+          o.setName('reason').setDescription('Reason for deletion').setRequired(true)
+        )
     )
     .addSubcommand(sub =>
       sub
         .setName('close-all')
         .setDescription('Close all open tickets')
+        .addStringOption(o =>
+          o.setName('reason').setDescription('Reason for closing all tickets').setRequired(true)
+        )
     )
     .addSubcommand(sub =>
       sub
@@ -129,6 +135,7 @@ module.exports = {
 
     if (sub === 'delete') {
       const channel = interaction.options.getChannel('channel');
+      const reason = interaction.options.getString('reason');
       
       const ticket = db.prepare(`SELECT * FROM tickets WHERE channel_id = ?`).get(channel.id);
       
@@ -161,19 +168,46 @@ module.exports = {
           `[${msg.createdAt.toLocaleString()}] ${msg.author.tag}: ${msg.content}`
         ).join('\n');
 
-        db.prepare(`
-          INSERT INTO transcripts (ticket_id, channel_id, user_id, user_tag, ticket_type, messages)
-          VALUES (?, ?, ?, ?, ?, ?)
+        const result = db.prepare(`
+          INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `).run(
           ticket.id,
+          ticket.ticket_number,
           ticket.channel_id,
           ticket.user_id,
           allMessages[0]?.author?.tag || 'Unknown',
           ticket.ticket_type || 'N/A',
-          transcriptText
+          transcriptText,
+          `DELETED: ${reason}`
         );
 
         db.prepare(`UPDATE tickets SET status = 'deleted' WHERE channel_id = ?`).run(channel.id);
+
+        const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+        
+        if (config && config.transcript_channel_id) {
+          const transcriptChannel = interaction.guild.channels.cache.get(config.transcript_channel_id);
+          
+          if (transcriptChannel) {
+            const transcriptEmbed = new EmbedBuilder()
+              .setTitle(`📜 Ticket #${ticket.ticket_number} - Transcript (DELETED)`)
+              .setDescription(`**User:** <@${ticket.user_id}>\n**Type:** ${ticket.ticket_type || 'N/A'}\n**Deleted by:** ${interaction.user}\n**Delete Reason:** ${reason}\n**Messages:** ${allMessages.length}`)
+              .setColor('#FF0000')
+              .setTimestamp();
+
+            const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+            const transcriptButton = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setCustomId(`view_transcript_${result.lastInsertRowid}`)
+                .setLabel('View Transcript')
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji('📄')
+            );
+
+            await transcriptChannel.send({ embeds: [transcriptEmbed], components: [transcriptButton] });
+          }
+        }
 
         await channel.delete();
         
@@ -185,6 +219,7 @@ module.exports = {
     }
 
     if (sub === 'close-all') {
+      const reason = interaction.options.getString('reason');
       const rows = db.prepare(`SELECT * FROM tickets WHERE status = 'open'`).all();
       
       if (rows.length === 0) {
@@ -200,6 +235,42 @@ module.exports = {
         try {
           const channel = await interaction.guild.channels.fetch(ticket.channel_id);
           if (channel) {
+            let allMessages = [];
+            let lastId;
+
+            while (true) {
+              const options = { limit: 100 };
+              if (lastId) options.before = lastId;
+
+              const messages = await channel.messages.fetch(options);
+              if (messages.size === 0) break;
+
+              allMessages.push(...Array.from(messages.values()));
+              lastId = messages.last().id;
+
+              if (messages.size < 100) break;
+            }
+
+            allMessages.reverse();
+            
+            const transcriptText = allMessages.map(msg => 
+              `[${msg.createdAt.toLocaleString()}] ${msg.author.tag}: ${msg.content}`
+            ).join('\n');
+
+            const result = db.prepare(`
+              INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `).run(
+              ticket.id,
+              ticket.ticket_number,
+              ticket.channel_id,
+              ticket.user_id,
+              interaction.user.tag,
+              ticket.ticket_type || 'N/A',
+              transcriptText,
+              `BULK CLOSE: ${reason}`
+            );
+
             await channel.permissionOverwrites.edit(interaction.guild.id, {
               SendMessages: false
             });
@@ -214,7 +285,31 @@ module.exports = {
               });
             }
             
-            await channel.send('🔒 This ticket has been closed and locked. No one can send messages anymore.');
+            await channel.send(`🔒 This ticket has been closed and locked. No one can send messages anymore.\n**Close Reason:** ${reason}`);
+
+            if (config && config.transcript_channel_id) {
+              const transcriptChannel = interaction.guild.channels.cache.get(config.transcript_channel_id);
+              
+              if (transcriptChannel) {
+                const transcriptEmbed = new EmbedBuilder()
+                  .setTitle(`📜 Ticket #${ticket.ticket_number} - Transcript`)
+                  .setDescription(`**User:** <@${ticket.user_id}>\n**Type:** ${ticket.ticket_type || 'N/A'}\n**Closed by:** ${interaction.user}\n**Close Reason:** BULK CLOSE: ${reason}\n**Messages:** ${allMessages.length}`)
+                  .setColor('#0A235B')
+                  .setTimestamp();
+
+                const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+                const transcriptButton = new ActionRowBuilder().addComponents(
+                  new ButtonBuilder()
+                    .setCustomId(`view_transcript_${result.lastInsertRowid}`)
+                    .setLabel('View Transcript')
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji('📄')
+                );
+
+                await transcriptChannel.send({ embeds: [transcriptEmbed], components: [transcriptButton] });
+              }
+            }
+
             db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(ticket.channel_id);
             closed++;
           }
@@ -223,7 +318,7 @@ module.exports = {
         }
       }
 
-      await interaction.editReply({ content: `✅ Closed ${closed} ticket(s).` });
+      await interaction.editReply({ content: `✅ Closed ${closed} ticket(s) and saved transcripts.` });
     }
 
     if (sub === 'transcript') {
