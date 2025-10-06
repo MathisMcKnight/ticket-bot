@@ -1,4 +1,4 @@
-﻿const { SlashCommandBuilder, PermissionFlagsBits, InteractionResponseFlags } = require('discord.js');
+﻿const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const db = require('../database');
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
 
     await interaction.reply({
       content: `✅ Configuration saved! Category: ${category}, Role: ${role}`,
-      flags: InteractionResponseFlags.Ephemeral,
+      ephemeral: true,
     });
   },
 };

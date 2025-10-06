@@ -1,4 +1,4 @@
-﻿const { SlashCommandBuilder, InteractionResponseFlags } = require('discord.js');
+﻿const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -7,7 +7,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.reply({
       content: 'Available commands: `/setup`, `/panel`, `/ticket`',
-      flags: InteractionResponseFlags.Ephemeral,
+      ephemeral: true,
     });
   },
 };
