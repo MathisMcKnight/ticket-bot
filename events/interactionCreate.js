@@ -97,6 +97,18 @@ module.exports = {
       );
 
       await channel.send({ content: `<@&${roleId}>`, embeds: [embed], components: [row] });
+
+      const templateEmbed = new EmbedBuilder()
+        .setTitle('📝 Please Provide Information')
+        .setDescription('To help us assist you better, please provide the following information:')
+        .addFields(
+          { name: 'Roblox Username', value: '*Your Roblox username*', inline: false },
+          { name: 'Purpose for Opening Ticket', value: '*Describe why you opened this ticket*', inline: false }
+        )
+        .setColor('#0A235B')
+        .setFooter({ text: 'Please fill out this template in your next message' });
+
+      await channel.send({ embeds: [templateEmbed] });
       await interaction.reply({ content: `✅ Ticket created: ${channel}`, ephemeral: true });
     }
 
@@ -132,7 +144,75 @@ module.exports = {
         }
         return await interaction.reply({ content: `🎟️ Ticket claimed by ${interaction.user.tag}` });
       }
+    }
 
+    if (interaction.isStringSelectMenu() && interaction.customId === 'transfer_ticket') {
+      const db = require('../database');
+      const categoryId = interaction.values[0];
+      
+      const ticket = db.prepare(`SELECT * FROM tickets WHERE channel_id = ?`).get(interaction.channel.id);
+      
+      if (!ticket) {
+        return interaction.update({ content: '❌ This is not a valid ticket channel.', components: [] });
+      }
+
+      const categoryNames = {
+        '1338827711652565085': 'General Inquires',
+        '1424653874085494854': 'Internal Affairs',
+        '1424655379001901107': 'Agency Affairs',
+        '1424656073071001720': 'Comms Dept'
+      };
+
+      const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+      
+      const categoryToRoleMapping = {
+        '1338827711652565085': config?.general_inquiry_role_id,
+        '1424653874085494854': config?.internal_affairs_role_id,
+        '1424655379001901107': config?.agency_hotline_role_id,
+        '1424656073071001720': config?.press_clearance_role_id
+      };
+
+      const newRoleId = categoryToRoleMapping[categoryId];
+
+      if (!newRoleId) {
+        return interaction.update({ 
+          content: '❌ Target category not configured. Please ask an admin to run /setup.', 
+          components: [] 
+        });
+      }
+
+      try {
+        const currentPermissions = interaction.channel.permissionOverwrites.cache;
+        const oldRoleOverwrites = currentPermissions.filter(p => 
+          p.type === 0 && p.id !== interaction.guild.id && p.id !== ticket.user_id
+        );
+
+        for (const overwrite of oldRoleOverwrites.values()) {
+          await interaction.channel.permissionOverwrites.delete(overwrite.id);
+        }
+
+        await interaction.channel.permissionOverwrites.create(newRoleId, {
+          ViewChannel: true,
+          SendMessages: true
+        });
+
+        await interaction.channel.setParent(categoryId);
+        
+        const transferEmbed = new EmbedBuilder()
+          .setTitle('🔄 Ticket Transferred')
+          .setDescription(`This ticket has been transferred to **${categoryNames[categoryId]}**\n\n**Transferred by:** ${interaction.user}\n**New Support Team:** <@&${newRoleId}>`)
+          .setColor('#00A8FF')
+          .setTimestamp();
+
+        await interaction.channel.send({ content: `<@&${newRoleId}>`, embeds: [transferEmbed] });
+        await interaction.update({ content: `✅ Ticket transferred to ${categoryNames[categoryId]}!`, components: [] });
+      } catch (error) {
+        console.error('Transfer error:', error);
+        await interaction.update({ content: '❌ Failed to transfer ticket. Please check category permissions.', components: [] });
+      }
+    }
+
+    if (interaction.isButton()) {
       if (interaction.customId === 'setup_continue_part2') {
         const modal = new ModalBuilder()
           .setCustomId('setup_modal_part2')
