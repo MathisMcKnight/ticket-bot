@@ -176,7 +176,7 @@ module.exports = {
           ticket.ticket_number,
           ticket.channel_id,
           ticket.user_id,
-          allMessages[0]?.author?.tag || 'Unknown',
+          interaction.user.tag,
           ticket.ticket_type || 'N/A',
           transcriptText,
           `DELETED: ${reason}`
