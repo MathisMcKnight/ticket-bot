@@ -1,4 +1,4 @@
-﻿const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+﻿const { SlashCommandBuilder, PermissionFlagsBits, InteractionResponseFlags } = require('discord.js');
 const db = require('../database');
 
 module.exports = {
@@ -17,14 +17,13 @@ module.exports = {
     const category = interaction.options.getChannel('category');
     const role = interaction.options.getRole('supportrole');
 
-    db.run(
-      `INSERT OR REPLACE INTO configs (guild_id, category_id, support_role_id) VALUES (?, ?, ?)`,
-      [interaction.guild.id, category.id, role.id]
-    );
+    db.prepare(
+      `INSERT OR REPLACE INTO configs (guild_id, category_id, support_role_id) VALUES (?, ?, ?)`
+    ).run(interaction.guild.id, category.id, role.id);
 
     await interaction.reply({
       content: `✅ Configuration saved! Category: ${category}, Role: ${role}`,
-      ephemeral: true,
+      flags: InteractionResponseFlags.Ephemeral,
     });
   },
 };

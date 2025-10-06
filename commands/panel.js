@@ -3,6 +3,7 @@
   EmbedBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  InteractionResponseFlags,
 } = require('discord.js');
 
 module.exports = {
@@ -39,7 +40,7 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(menu);
 
-    await interaction.reply({ content: '✅ Panel created.', ephemeral: true });
+    await interaction.reply({ content: '✅ Panel created.', flags: InteractionResponseFlags.Ephemeral });
     await interaction.channel.send({ embeds: [embed], components: [row] });
   },
 };
