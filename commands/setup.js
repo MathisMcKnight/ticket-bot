@@ -19,11 +19,8 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('🎫 Ticket System Setup')
-      .setDescription('Click the buttons below to configure each ticket type and the transcript channel.\n\n**Setup Steps:**\n1. Configure General Inquiry\n2. Configure Press Clearance\n3. Configure Agency Hotline\n4. Configure Internal Affairs\n5. Configure Escalation & Transcript')
-      .setColor('#0A235B')
-      .addFields(
-        { name: '📋 How to find IDs', value: 'Enable Developer Mode in Discord settings, then right-click channels/roles and click "Copy ID"' }
-      );
+      .setDescription('Click the buttons below to configure each ticket type and the transcript channel.\n\n**Setup Steps:**\n1. Configure General Inquiry\n2. Configure Press Clearance\n3. Configure Agency Hotline\n4. Configure Internal Affairs\n5. Configure Escalation & Transcript\n\n**Easy Setup:** Use dropdown menus to select channels and roles - no need to copy IDs!')
+      .setColor('#0A235B');
 
     const row1 = new ActionRowBuilder().addComponents(
       new ButtonBuilder()

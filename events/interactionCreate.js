@@ -1,7 +1,9 @@
-﻿const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
+﻿const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits, AttachmentBuilder, ChannelType, StringSelectMenuBuilder } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
+
+const setupState = new Map();
 
 module.exports = {
   name: 'interactionCreate',
@@ -134,138 +136,253 @@ module.exports = {
       }
 
       if (interaction.customId === 'setup_general_inquiry') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_general_inquiry')
-          .setTitle('General Inquiry Setup');
+        const categories = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildCategory);
+        
+        if (categories.size === 0) {
+          return interaction.reply({ content: '❌ No categories found in this server.', ephemeral: true });
+        }
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_category_general_inquiry')
+          .setPlaceholder('Select a category for General Inquiry tickets')
+          .addOptions(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+              description: `ID: ${category.id}`
+            }))
+          );
 
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.reply({
+          content: '📂 **Step 1/2:** Select the category where General Inquiry tickets will be created:',
+          components: [row],
+          ephemeral: true
+        });
       }
 
       if (interaction.customId === 'setup_press_clearance') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_press_clearance')
-          .setTitle('Press Clearance Setup');
+        const categories = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildCategory);
+        
+        if (categories.size === 0) {
+          return interaction.reply({ content: '❌ No categories found in this server.', ephemeral: true });
+        }
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_category_press_clearance')
+          .setPlaceholder('Select a category for Press Clearance tickets')
+          .addOptions(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+              description: `ID: ${category.id}`
+            }))
+          );
 
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.reply({
+          content: '📂 **Step 1/2:** Select the category where Press Clearance tickets will be created:',
+          components: [row],
+          ephemeral: true
+        });
       }
 
       if (interaction.customId === 'setup_agency_hotline') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_agency_hotline')
-          .setTitle('Agency Hotline Setup');
+        const categories = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildCategory);
+        
+        if (categories.size === 0) {
+          return interaction.reply({ content: '❌ No categories found in this server.', ephemeral: true });
+        }
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_category_agency_hotline')
+          .setPlaceholder('Select a category for Agency Hotline tickets')
+          .addOptions(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+              description: `ID: ${category.id}`
+            }))
+          );
 
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.reply({
+          content: '📂 **Step 1/2:** Select the category where Agency Hotline tickets will be created:',
+          components: [row],
+          ephemeral: true
+        });
       }
 
       if (interaction.customId === 'setup_internal_affairs') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_internal_affairs')
-          .setTitle('Internal Affairs Setup');
+        const categories = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildCategory);
+        
+        if (categories.size === 0) {
+          return interaction.reply({ content: '❌ No categories found in this server.', ephemeral: true });
+        }
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_category_internal_affairs')
+          .setPlaceholder('Select a category for Internal Affairs tickets')
+          .addOptions(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+              description: `ID: ${category.id}`
+            }))
+          );
 
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.reply({
+          content: '📂 **Step 1/2:** Select the category where Internal Affairs tickets will be created:',
+          components: [row],
+          ephemeral: true
+        });
       }
 
       if (interaction.customId === 'setup_escalation_transcript') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_escalation_transcript')
-          .setTitle('Escalation & Transcript Setup');
+        const categories = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildCategory);
+        
+        if (categories.size === 0) {
+          return interaction.reply({ content: '❌ No categories found in this server.', ephemeral: true });
+        }
 
-        const escalationCategoryInput = new TextInputBuilder()
-          .setCustomId('escalation_category_id')
-          .setLabel('Escalation Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_escalation_category')
+          .setPlaceholder('Select the escalation category')
+          .addOptions(
+            categories.map(category => ({
+              label: category.name,
+              value: category.id,
+              description: `ID: ${category.id}`
+            }))
+          );
 
-        const transcriptChannelInput = new TextInputBuilder()
-          .setCustomId('transcript_channel_id')
-          .setLabel('Transcript Channel ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click channel → Copy ID')
-          .setRequired(true);
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.reply({
+          content: '📂 **Step 1/2:** Select the category for escalated tickets:',
+          components: [row],
+          ephemeral: true
+        });
+      }
+    }
 
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(escalationCategoryInput),
-          new ActionRowBuilder().addComponents(transcriptChannelInput)
-        );
+    if (interaction.isStringSelectMenu()) {
+      const db = require('../database');
 
-        return await interaction.showModal(modal);
+      if (interaction.customId.startsWith('select_category_')) {
+        const ticketType = interaction.customId.replace('select_category_', '');
+        const categoryId = interaction.values[0];
+        
+        setupState.set(interaction.user.id, { ticketType, categoryId });
+
+        const roles = interaction.guild.roles.cache.filter(r => !r.managed && r.name !== '@everyone');
+        
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId(`select_role_${ticketType}`)
+          .setPlaceholder('Select the manager role for this ticket type')
+          .addOptions(
+            roles.slice(0, 25).map(role => ({
+              label: role.name,
+              value: role.id,
+              description: `ID: ${role.id}`
+            }))
+          );
+
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.update({
+          content: `✅ Category selected: <#${categoryId}>\n\n👥 **Step 2/2:** Select the manager role:`,
+          components: [row]
+        });
+      }
+
+      if (interaction.customId.startsWith('select_role_')) {
+        const ticketType = interaction.customId.replace('select_role_', '');
+        const roleId = interaction.values[0];
+        const state = setupState.get(interaction.user.id);
+
+        if (!state || state.ticketType !== ticketType) {
+          return interaction.update({ content: '❌ Setup session expired. Please start again.', components: [] });
+        }
+
+        const typeMapping = {
+          'general_inquiry': { catCol: 'general_inquiry_category_id', roleCol: 'general_inquiry_role_id', name: 'General Inquiry' },
+          'press_clearance': { catCol: 'press_clearance_category_id', roleCol: 'press_clearance_role_id', name: 'Press Clearance' },
+          'agency_hotline': { catCol: 'agency_hotline_category_id', roleCol: 'agency_hotline_role_id', name: 'Agency Hotline' },
+          'internal_affairs': { catCol: 'internal_affairs_category_id', roleCol: 'internal_affairs_role_id', name: 'Internal Affairs' }
+        };
+
+        const mapping = typeMapping[ticketType];
+        
+        db.prepare(`
+          INSERT INTO configs (guild_id, ${mapping.catCol}, ${mapping.roleCol}) 
+          VALUES (?, ?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            ${mapping.catCol} = excluded.${mapping.catCol},
+            ${mapping.roleCol} = excluded.${mapping.roleCol}
+        `).run(interaction.guild.id, state.categoryId, roleId);
+
+        setupState.delete(interaction.user.id);
+
+        return await interaction.update({
+          content: `✅ **${mapping.name}** configuration saved!\n📂 Category: <#${state.categoryId}>\n👥 Manager Role: <@&${roleId}>`,
+          components: []
+        });
+      }
+
+      if (interaction.customId === 'select_escalation_category') {
+        const categoryId = interaction.values[0];
+        
+        setupState.set(interaction.user.id, { escalationCategoryId: categoryId });
+
+        const textChannels = interaction.guild.channels.cache.filter(c => c.type === ChannelType.GuildText);
+        
+        const selectMenu = new StringSelectMenuBuilder()
+          .setCustomId('select_transcript_channel')
+          .setPlaceholder('Select the transcript channel')
+          .addOptions(
+            textChannels.slice(0, 25).map(channel => ({
+              label: channel.name,
+              value: channel.id,
+              description: `ID: ${channel.id}`
+            }))
+          );
+
+        const row = new ActionRowBuilder().addComponents(selectMenu);
+        
+        return await interaction.update({
+          content: `✅ Escalation category selected: <#${categoryId}>\n\n📝 **Step 2/2:** Select the transcript channel:`,
+          components: [row]
+        });
+      }
+
+      if (interaction.customId === 'select_transcript_channel') {
+        const transcriptChannelId = interaction.values[0];
+        const state = setupState.get(interaction.user.id);
+
+        if (!state || !state.escalationCategoryId) {
+          return interaction.update({ content: '❌ Setup session expired. Please start again.', components: [] });
+        }
+
+        db.prepare(`
+          INSERT INTO configs (guild_id, escalation_category_id, transcript_channel_id) 
+          VALUES (?, ?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            escalation_category_id = excluded.escalation_category_id,
+            transcript_channel_id = excluded.transcript_channel_id
+        `).run(interaction.guild.id, state.escalationCategoryId, transcriptChannelId);
+
+        setupState.delete(interaction.user.id);
+
+        return await interaction.update({
+          content: `✅ **Escalation & Transcript** configuration saved!\n📂 Escalation Category: <#${state.escalationCategoryId}>\n📝 Transcript Channel: <#${transcriptChannelId}>`,
+          components: []
+        });
       }
     }
 
@@ -377,85 +494,6 @@ module.exports = {
       }
     }
 
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_general_inquiry') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          general_inquiry_category_id = excluded.general_inquiry_category_id,
-          general_inquiry_role_id = excluded.general_inquiry_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
-
-      await interaction.reply({ content: '✅ General Inquiry configuration saved!', ephemeral: true });
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_press_clearance') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          press_clearance_category_id = excluded.press_clearance_category_id,
-          press_clearance_role_id = excluded.press_clearance_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
-
-      await interaction.reply({ content: '✅ Press Clearance configuration saved!', ephemeral: true });
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_agency_hotline') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, agency_hotline_category_id, agency_hotline_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          agency_hotline_category_id = excluded.agency_hotline_category_id,
-          agency_hotline_role_id = excluded.agency_hotline_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
-
-      await interaction.reply({ content: '✅ Agency Hotline configuration saved!', ephemeral: true });
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_internal_affairs') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          internal_affairs_category_id = excluded.internal_affairs_category_id,
-          internal_affairs_role_id = excluded.internal_affairs_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
-
-      await interaction.reply({ content: '✅ Internal Affairs configuration saved!', ephemeral: true });
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_escalation_transcript') {
-      const db = require('../database');
-      const escalationCategoryId = interaction.fields.getTextInputValue('escalation_category_id');
-      const transcriptChannelId = interaction.fields.getTextInputValue('transcript_channel_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, escalation_category_id, transcript_channel_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          escalation_category_id = excluded.escalation_category_id,
-          transcript_channel_id = excluded.transcript_channel_id
-      `).run(interaction.guild.id, escalationCategoryId, transcriptChannelId);
-
-      await interaction.reply({ content: '✅ Escalation & Transcript configuration saved!', ephemeral: true });
-    }
 
   },
 };
