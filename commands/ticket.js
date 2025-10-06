@@ -2,9 +2,14 @@ const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } = require('discord.js');
 const db = require('../database');
 const discordTranscripts = require('discord-html-transcripts');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs').promises;
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -154,11 +159,17 @@ module.exports = {
           poweredBy: false
         });
 
+        const token = uuidv4();
+        const fileName = `${token}.html`;
+        const filePath = `transcripts/${fileName}`;
+        
+        await fs.writeFile(filePath, attachment.attachment);
+
         const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
         
         db.prepare(`
-          INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, token, file_path)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).run(
           ticket.id,
           ticket.ticket_number,
@@ -167,17 +178,27 @@ module.exports = {
           interaction.user.tag,
           ticket.ticket_type || 'N/A',
           `HTML_TRANSCRIPT:ticket-${ticket.ticket_number}-transcript.html`,
-          `DELETED: ${reason}`
+          `DELETED: ${reason}`,
+          token,
+          filePath
         );
 
         db.prepare(`UPDATE tickets SET status = 'deleted' WHERE channel_id = ?`).run(channel.id);
+
+        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const viewButton = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setLabel('📄 View Transcript')
+            .setStyle(ButtonStyle.Link)
+            .setURL(transcriptUrl)
+        );
 
         try {
           const ticketCreator = await interaction.client.users.fetch(ticket.user_id);
           
           const dmEmbed = new EmbedBuilder()
             .setTitle('🎫 Your Ticket Has Been Deleted')
-            .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been deleted.`)
+            .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been deleted.\n\nClick the button below to view your transcript in your browser.`)
             .addFields(
               { name: '📝 Delete Reason', value: reason },
               { name: '👤 Deleted By', value: interaction.user.tag }
@@ -188,7 +209,7 @@ module.exports = {
 
           await ticketCreator.send({ 
             embeds: [dmEmbed],
-            files: [attachment]
+            components: [viewButton]
           });
         } catch (dmError) {
           console.error('Could not DM user:', dmError.message);
@@ -206,7 +227,7 @@ module.exports = {
 
             await transcriptChannel.send({ 
               embeds: [transcriptEmbed],
-              files: [attachment]
+              components: [viewButton]
             });
           }
         }
@@ -244,9 +265,15 @@ module.exports = {
               poweredBy: false
             });
 
+            const token = uuidv4();
+            const fileName = `${token}.html`;
+            const filePath = `transcripts/${fileName}`;
+            
+            await fs.writeFile(filePath, attachment.attachment);
+
             db.prepare(`
-              INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+              INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, token, file_path)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `).run(
               ticket.id,
               ticket.ticket_number,
@@ -255,7 +282,17 @@ module.exports = {
               interaction.user.tag,
               ticket.ticket_type || 'N/A',
               `HTML_TRANSCRIPT:ticket-${ticket.ticket_number}-transcript.html`,
-              `BULK CLOSE: ${reason}`
+              `BULK CLOSE: ${reason}`,
+              token,
+              filePath
+            );
+
+            const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+            const viewButton = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setLabel('📄 View Transcript')
+                .setStyle(ButtonStyle.Link)
+                .setURL(transcriptUrl)
             );
 
             try {
@@ -263,7 +300,7 @@ module.exports = {
               
               const dmEmbed = new EmbedBuilder()
                 .setTitle('🎫 Your Ticket Has Been Closed')
-                .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been closed.`)
+                .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been closed.\n\nClick the button below to view your transcript in your browser.`)
                 .addFields(
                   { name: '📝 Close Reason', value: `BULK CLOSE: ${reason}` },
                   { name: '👤 Closed By', value: interaction.user.tag }
@@ -274,7 +311,7 @@ module.exports = {
 
               await ticketCreator.send({ 
                 embeds: [dmEmbed],
-                files: [attachment]
+                components: [viewButton]
               });
             } catch (dmError) {
               console.error('Could not DM user:', dmError.message);
@@ -292,7 +329,7 @@ module.exports = {
 
                 await transcriptChannel.send({ 
                   embeds: [transcriptEmbed],
-                  files: [attachment]
+                  components: [viewButton]
                 });
               }
             }

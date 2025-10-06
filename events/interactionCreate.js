@@ -1,5 +1,7 @@
 ﻿const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs').promises;
 
 module.exports = {
   name: 'interactionCreate',
@@ -129,11 +131,17 @@ module.exports = {
           poweredBy: false
         });
 
+        const token = uuidv4();
+        const fileName = `${token}.html`;
+        const filePath = `transcripts/${fileName}`;
+        
+        await fs.writeFile(filePath, attachment.attachment);
+
         const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
         
-        const result = db.prepare(`
-          INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        db.prepare(`
+          INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, token, file_path)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).run(
           ticket.id,
           ticket.ticket_number,
@@ -142,17 +150,27 @@ module.exports = {
           interaction.user.tag,
           ticket.ticket_type || 'N/A',
           `HTML_TRANSCRIPT:ticket-${ticket.ticket_number}-transcript.html`,
-          closeReason
+          closeReason,
+          token,
+          filePath
         );
 
         db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(interaction.channel.id);
+
+        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const viewButton = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setLabel('📄 View Transcript')
+            .setStyle(ButtonStyle.Link)
+            .setURL(transcriptUrl)
+        );
 
         try {
           const ticketCreator = await interaction.client.users.fetch(ticket.user_id);
           
           const dmEmbed = new EmbedBuilder()
             .setTitle('🎫 Your Ticket Has Been Closed')
-            .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been closed.`)
+            .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been closed.\n\nClick the button below to view your transcript in your browser.`)
             .addFields(
               { name: '📝 Close Reason', value: closeReason },
               { name: '👤 Closed By', value: interaction.user.tag }
@@ -163,7 +181,7 @@ module.exports = {
 
           await ticketCreator.send({ 
             embeds: [dmEmbed],
-            files: [attachment]
+            components: [viewButton]
           });
         } catch (dmError) {
           console.error('Could not DM user:', dmError.message);
@@ -181,7 +199,7 @@ module.exports = {
 
             await transcriptChannel.send({ 
               embeds: [transcriptEmbed],
-              files: [attachment]
+              components: [viewButton]
             });
           }
         }
