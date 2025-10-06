@@ -1,4 +1,5 @@
-﻿const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
+﻿const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
+const discordTranscripts = require('discord-html-transcripts');
 
 module.exports = {
   name: 'interactionCreate',
@@ -121,28 +122,15 @@ module.exports = {
       await interaction.deferReply({ ephemeral: true });
 
       try {
-        let allMessages = [];
-        let lastId;
+        const attachment = await discordTranscripts.createTranscript(interaction.channel, {
+          limit: -1,
+          filename: `ticket-${ticket.ticket_number}-transcript.html`,
+          saveImages: true,
+          poweredBy: false
+        });
 
-        while (true) {
-          const options = { limit: 100 };
-          if (lastId) options.before = lastId;
-
-          const messages = await interaction.channel.messages.fetch(options);
-          if (messages.size === 0) break;
-
-          allMessages.push(...Array.from(messages.values()));
-          lastId = messages.last().id;
-
-          if (messages.size < 100) break;
-        }
-
-        allMessages.reverse();
+        const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
         
-        const transcriptText = allMessages.map(msg => 
-          `[${msg.createdAt.toLocaleString()}] ${msg.author.tag}: ${msg.content}`
-        ).join('\n');
-
         const result = db.prepare(`
           INSERT INTO transcripts (ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -153,29 +141,33 @@ module.exports = {
           ticket.user_id,
           interaction.user.tag,
           ticket.ticket_type || 'N/A',
-          transcriptText,
+          `HTML_TRANSCRIPT:ticket-${ticket.ticket_number}-transcript.html`,
           closeReason
         );
 
         db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(interaction.channel.id);
 
-        const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
-        
-        await interaction.channel.permissionOverwrites.edit(interaction.guild.id, {
-          SendMessages: false
-        });
-        
-        await interaction.channel.permissionOverwrites.edit(ticket.user_id, {
-          SendMessages: false
-        });
-        
-        if (config && config.support_role_id) {
-          await interaction.channel.permissionOverwrites.edit(config.support_role_id, {
-            SendMessages: false
-          });
-        }
+        try {
+          const ticketCreator = await interaction.client.users.fetch(ticket.user_id);
+          
+          const dmEmbed = new EmbedBuilder()
+            .setTitle('🎫 Your Ticket Has Been Closed')
+            .setDescription(`Your ticket **#${ticket.ticket_number}** (${ticket.ticket_type || 'General'}) has been closed.`)
+            .addFields(
+              { name: '📝 Close Reason', value: closeReason },
+              { name: '👤 Closed By', value: interaction.user.tag }
+            )
+            .setColor('#0A235B')
+            .setFooter({ text: 'Thanks for your communications with the White House!' })
+            .setTimestamp();
 
-        await interaction.channel.send(`🔒 This ticket has been closed and locked. No one can send messages anymore.\n**Close Reason:** ${closeReason}`);
+          await ticketCreator.send({ 
+            embeds: [dmEmbed],
+            files: [attachment]
+          });
+        } catch (dmError) {
+          console.error('Could not DM user:', dmError.message);
+        }
 
         if (config && config.transcript_channel_id) {
           const transcriptChannel = interaction.guild.channels.cache.get(config.transcript_channel_id);
@@ -183,46 +175,30 @@ module.exports = {
           if (transcriptChannel) {
             const transcriptEmbed = new EmbedBuilder()
               .setTitle(`📜 Ticket #${ticket.ticket_number} - Transcript`)
-              .setDescription(`**User:** <@${ticket.user_id}>\n**Type:** ${ticket.ticket_type || 'N/A'}\n**Closed by:** ${interaction.user}\n**Close Reason:** ${closeReason}\n**Messages:** ${allMessages.length}`)
+              .setDescription(`**User:** <@${ticket.user_id}>\n**Type:** ${ticket.ticket_type || 'N/A'}\n**Closed by:** ${interaction.user}\n**Close Reason:** ${closeReason}`)
               .setColor('#0A235B')
               .setTimestamp();
 
-            const transcriptButton = new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                .setCustomId(`view_transcript_${result.lastInsertRowid}`)
-                .setLabel('View Transcript')
-                .setStyle(ButtonStyle.Primary)
-                .setEmoji('📄')
-            );
-
-            await transcriptChannel.send({ embeds: [transcriptEmbed], components: [transcriptButton] });
-          }
-        }
-
-        await interaction.editReply({ content: `✅ Ticket closed and transcript saved (${allMessages.length} messages).` });
-      } catch (error) {
-        console.error('Error saving transcript:', error);
-        
-        try {
-          const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
-          
-          await interaction.channel.permissionOverwrites.edit(interaction.guild.id, {
-            SendMessages: false
-          });
-          await interaction.channel.permissionOverwrites.edit(ticket.user_id, {
-            SendMessages: false
-          });
-          
-          if (config && config.support_role_id) {
-            await interaction.channel.permissionOverwrites.edit(config.support_role_id, {
-              SendMessages: false
+            await transcriptChannel.send({ 
+              embeds: [transcriptEmbed],
+              files: [attachment]
             });
           }
-        } catch (lockError) {
-          console.error('Error locking channel:', lockError);
         }
+
+        await interaction.editReply({ content: `✅ Ticket closed! Transcript sent to user and saved. Deleting channel in 5 seconds...` });
         
-        await interaction.editReply({ content: '✅ Ticket closed (transcript save failed).' });
+        setTimeout(async () => {
+          try {
+            await interaction.channel.delete();
+          } catch (deleteError) {
+            console.error('Error deleting channel:', deleteError);
+          }
+        }, 5000);
+
+      } catch (error) {
+        console.error('Error closing ticket:', error);
+        await interaction.editReply({ content: '❌ Error closing ticket. Please try again.' });
       }
     }
 
