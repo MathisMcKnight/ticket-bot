@@ -30,7 +30,7 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 9.  **Required Close Reasons**: All ticket closures necessitate a reason (5-500 characters) recorded in transcripts.
 10. **Automated Channel Deletion**: Closed tickets result in automatic channel deletion after transcript archiving.
 11. **Transcript History**: Admins can view transcript metadata for any user.
-12. **Modal-Based Setup**: Interactive wizard for server configuration using modals.
+12. **Streamlined Setup**: Two-part modal setup wizard that collects all configuration in one flow - Part 1 (General Inquiry, Press Clearance, Agency Hotline Category) and Part 2 (Agency Hotline Role, Internal Affairs, Escalation, Transcript Channel).
 
 ### System Design Choices
 -   **Core Files**: `index.js` (main entry), `database.js` (DB setup).
