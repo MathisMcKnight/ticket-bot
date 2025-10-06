@@ -81,10 +81,25 @@ module.exports = {
           await interaction.deferReply({ ephemeral: true });
 
           try {
-            const messages = await interaction.channel.messages.fetch({ limit: 100 });
-            const messagesArray = Array.from(messages.values()).reverse();
+            let allMessages = [];
+            let lastId;
+
+            while (true) {
+              const options = { limit: 100 };
+              if (lastId) options.before = lastId;
+
+              const messages = await interaction.channel.messages.fetch(options);
+              if (messages.size === 0) break;
+
+              allMessages.push(...Array.from(messages.values()));
+              lastId = messages.last().id;
+
+              if (messages.size < 100) break;
+            }
+
+            allMessages.reverse();
             
-            const transcriptText = messagesArray.map(msg => 
+            const transcriptText = allMessages.map(msg => 
               `[${msg.createdAt.toLocaleString()}] ${msg.author.tag}: ${msg.content}`
             ).join('\n');
 
@@ -102,11 +117,11 @@ module.exports = {
 
             db.prepare(`UPDATE tickets SET status = 'closed' WHERE channel_id = ?`).run(interaction.channel.id);
 
-            await interaction.editReply({ content: '✅ Ticket closed and transcript saved.' });
+            await interaction.editReply({ content: `✅ Ticket closed and transcript saved (${allMessages.length} messages).` });
             await interaction.channel.setLocked(true);
           } catch (error) {
             console.error('Error saving transcript:', error);
-            await interaction.editReply({ content: '✅ Ticket closed.' });
+            await interaction.editReply({ content: '✅ Ticket closed (transcript save failed).' });
             await interaction.channel.setLocked(true);
           }
         }
