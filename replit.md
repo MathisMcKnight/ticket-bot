@@ -45,3 +45,39 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 -   `express`: Web server for hosting transcripts.
 -   `uuid`: For generating unique identifiers (e.g., transcript tokens).
 -   `dotenv`: For managing environment variables.
+
+## Deployment
+
+### Docker Deployment
+The project is fully Dockerized for easy deployment:
+
+**Using Docker Compose (Recommended):**
+```bash
+docker-compose up -d
+```
+
+**Using Docker directly:**
+```bash
+# Build the image
+docker build -t ticket-bot .
+
+# Run the container
+docker run -d \
+  -p 5000:5000 \
+  -v $(pwd)/data.db:/app/data.db \
+  -v $(pwd)/transcripts:/app/transcripts \
+  --env-file .env \
+  --name ticket-bot \
+  ticket-bot
+```
+
+**Files:**
+- `Dockerfile` - Container build configuration
+- `docker-compose.yml` - Multi-container orchestration
+- `.dockerignore` - Excludes unnecessary files from build
+
+**Volumes:**
+- `data.db` - Persisted database
+- `transcripts/` - Persisted HTML transcripts
+
+**Port:** 5000 (transcript server)
