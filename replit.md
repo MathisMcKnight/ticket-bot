@@ -34,6 +34,7 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 13. **Ticket Template**: Every new ticket includes an automatic embed prompting users to provide their Roblox Username and Purpose for Opening Ticket.
 14. **Enhanced Panel**: Ticket panel includes concise 1-2 word descriptions for each ticket type (Questions & Support, Media Authorization, Agency Matters, Internal Reports).
 15. **Streamlined Setup**: Two-part modal setup wizard that collects all configuration in one flow - Part 1 (General Inquiry, Press Clearance, Agency Hotline Category) and Part 2 (Agency Hotline Role, Internal Affairs, Escalation, Transcript Channel).
+16. **Quick Config Commands**: Individual `/config` subcommands for fast adjustments using Discord's native role/channel selectors, restricted to Chief of Staff role only.
 
 ### System Design Choices
 -   **Core Files**: `index.js` (main entry), `database.js` (DB setup).
