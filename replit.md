@@ -38,15 +38,16 @@ This is a Discord bot designed to manage support tickets within Discord servers.
 1. **Ticket Creation** - Users can create support tickets via interactive panel with automatic numbering
 2. **Ticket Numbering** - Automatic sequential ticket numbers (#1, #2, #3, etc.) displayed in channels and embeds
 3. **Ticket Type Tracking** - Tracks ticket types (General Inquiry, Support Request, Escalation)
-4. **Complete Transcript System** - Saves full message history when tickets are closed or deleted with close reasons
-5. **Public Transcript Channel** - Designated channel where all transcripts are posted with interactive view buttons
-6. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
-7. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
-8. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
-9. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
-10. **Channel Locking** - Closed tickets prevent all users (including staff) from sending messages
-11. **Transcript Viewing** - View saved transcripts for any user, plus public access via buttons
-12. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
+4. **HTML Transcript System** - Generates Discord Chat Exporter-style HTML transcripts with embedded CSS
+5. **Automatic DM Notifications** - Users receive transcript file and close reason via DM when tickets close
+6. **Public Transcript Channel** - HTML transcripts posted as downloadable files in designated channel
+7. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
+8. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
+9. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
+10. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
+11. **Channel Deletion** - Closed tickets are automatically deleted after transcript archiving
+12. **Transcript History** - View transcript metadata for any user with ticket numbers and close reasons
+13. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
 
 ### Database Schema
 - **tickets** - Stores ticket information (id, ticket_number, user_id, channel_id, status, ticket_type, created_at)
@@ -57,6 +58,7 @@ This is a Discord bot designed to manage support tickets within Discord servers.
 ## Dependencies
 - `discord.js` (^14.22.1) - Discord API wrapper
 - `better-sqlite3` (^12.4.1) - SQLite database
+- `discord-html-transcripts` (^3.2.0) - HTML transcript generation
 - `dotenv` (^17.2.3) - Environment variable management
 - `nodemon` (^3.1.10) - Development auto-reload
 
@@ -100,7 +102,37 @@ All commands require Administrator permissions:
 
 ## Recent Changes
 
-### 2025-10-06 (Latest Update): Advanced Ticket System with Public Transcripts
+### 2025-10-06 (Latest Update): HTML Transcript System with DM Notifications
+- **📄 Discord Chat Exporter HTML Transcripts**
+  - Replaced text-based transcripts with HTML transcripts using discord-html-transcripts package
+  - Transcripts styled in Discord Chat Exporter format with embedded CSS
+  - HTML files include all messages, attachments, embeds, and formatting
+  - Filename format: `ticket-{number}-transcript.html` for easy identification
+  
+- **📧 Automatic DM Notifications**
+  - Users automatically receive transcript file via DM when their ticket closes or is deleted
+  - DM includes close/delete reason and who performed the action
+  - Includes "Thanks for your communications with the White House!" footer
+  - Graceful error handling if user has DMs disabled
+  
+- **🗑️ Channel Deletion Instead of Locking**
+  - Closed tickets are now deleted after transcript is saved
+  - /ticket delete command immediately deletes channel after archiving
+  - /ticket close-all deletes channels with 3-second delay after archiving
+  - Close button deletes channel immediately after transcript archiving
+  
+- **📂 Downloadable Transcript Files**
+  - Transcript channel receives HTML files as direct attachments
+  - Users can click to download and view full conversation history
+  - Removed interactive "View Transcript" buttons (no longer needed)
+  - Database stores filename reference for tracking
+  
+- **🔄 Updated Commands**
+  - /ticket transcript now shows close reasons and references transcript channel
+  - /help updated to reflect HTML transcript system
+  - All close methods (button, delete, close-all) use consistent HTML export flow
+
+### 2025-10-06 (Previous Update): Advanced Ticket System with Public Transcripts
 - **🎫 Ticket Numbering System**
   - Added automatic sequential ticket numbering (#1, #2, #3, etc.)
   - Ticket numbers displayed in channel names (ticket-1, ticket-2, etc.)
