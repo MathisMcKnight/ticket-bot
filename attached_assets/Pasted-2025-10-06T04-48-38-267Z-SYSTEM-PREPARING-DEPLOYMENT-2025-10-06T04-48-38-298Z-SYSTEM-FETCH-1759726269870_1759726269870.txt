@@ -1,0 +1,1319 @@
+2025-10-06T04:48:38.267Z
+SYSTEM
+PREPARING DEPLOYMENT...
+
+2025-10-06T04:48:38.298Z
+SYSTEM
+FETCHING GITHUB REPOSITORY...
+
+2025-10-06T04:48:38.637Z
+SYSTEM
+BUILDING IMAGE...
+
+2025-10-06T04:48:39.164Z
+INFO
+Enumerating objects: 224, done.
+
+2025-10-06T04:48:39.165Z
+INFO
+Counting objects: 0% (1/224)
+
+2025-10-06T04:48:39.166Z
+INFO
+Counting objects: 1% (3/224)
+
+2025-10-06T04:48:39.167Z
+INFO
+Counting objects: 2% (5/224)
+
+2025-10-06T04:48:39.168Z
+INFO
+Counting objects: 3% (7/224)
+
+2025-10-06T04:48:39.169Z
+INFO
+Counting objects: 4% (9/224)
+
+2025-10-06T04:48:39.170Z
+INFO
+Counting objects: 5% (12/224)
+
+2025-10-06T04:48:39.171Z
+INFO
+Counting objects: 6% (14/224)
+
+2025-10-06T04:48:39.172Z
+INFO
+Counting objects: 7% (16/224)
+
+2025-10-06T04:48:39.173Z
+INFO
+Counting objects: 8% (18/224)
+
+2025-10-06T04:48:39.174Z
+INFO
+Counting objects: 9% (21/224)
+
+2025-10-06T04:48:39.175Z
+INFO
+Counting objects: 10% (23/224)
+
+2025-10-06T04:48:39.176Z
+INFO
+Counting objects: 11% (25/224)
+
+2025-10-06T04:48:39.177Z
+INFO
+Counting objects: 12% (27/224)
+
+2025-10-06T04:48:39.178Z
+INFO
+Counting objects: 13% (30/224)
+
+2025-10-06T04:48:39.179Z
+INFO
+Counting objects: 14% (32/224)
+
+2025-10-06T04:48:39.180Z
+INFO
+Counting objects: 15% (34/224)
+
+2025-10-06T04:48:39.181Z
+INFO
+Counting objects: 16% (36/224)
+
+2025-10-06T04:48:39.182Z
+INFO
+Counting objects: 17% (39/224)
+
+2025-10-06T04:48:39.183Z
+INFO
+Counting objects: 18% (41/224)
+
+2025-10-06T04:48:39.184Z
+INFO
+Counting objects: 19% (43/224)
+
+2025-10-06T04:48:39.185Z
+INFO
+Counting objects: 20% (45/224)
+
+2025-10-06T04:48:39.186Z
+INFO
+Counting objects: 21% (48/224)
+
+2025-10-06T04:48:39.187Z
+INFO
+Counting objects: 22% (50/224)
+
+2025-10-06T04:48:39.188Z
+INFO
+Counting objects: 23% (52/224)
+
+2025-10-06T04:48:39.189Z
+INFO
+Counting objects: 24% (54/224)
+
+2025-10-06T04:48:39.190Z
+INFO
+Counting objects: 25% (56/224)
+
+2025-10-06T04:48:39.191Z
+INFO
+Counting objects: 26% (59/224)
+
+2025-10-06T04:48:39.192Z
+INFO
+Counting objects: 27% (61/224)
+
+2025-10-06T04:48:39.193Z
+INFO
+Counting objects: 28% (63/224)
+
+2025-10-06T04:48:39.194Z
+INFO
+Counting objects: 29% (65/224)
+
+2025-10-06T04:48:39.195Z
+INFO
+Counting objects: 30% (68/224)
+
+2025-10-06T04:48:39.196Z
+INFO
+Counting objects: 31% (70/224)
+
+2025-10-06T04:48:39.197Z
+INFO
+Counting objects: 32% (72/224)
+
+2025-10-06T04:48:39.198Z
+INFO
+Counting objects: 33% (74/224)
+
+2025-10-06T04:48:39.199Z
+INFO
+Counting objects: 34% (77/224)
+
+2025-10-06T04:48:39.200Z
+INFO
+Counting objects: 35% (79/224)
+
+2025-10-06T04:48:39.201Z
+INFO
+Counting objects: 36% (81/224)
+
+2025-10-06T04:48:39.202Z
+INFO
+Counting objects: 37% (83/224)
+
+2025-10-06T04:48:39.203Z
+INFO
+Counting objects: 38% (86/224)
+
+2025-10-06T04:48:39.204Z
+INFO
+Counting objects: 39% (88/224)
+
+2025-10-06T04:48:39.205Z
+INFO
+Counting objects: 40% (90/224)
+
+2025-10-06T04:48:39.206Z
+INFO
+Counting objects: 41% (92/224)
+
+2025-10-06T04:48:39.207Z
+INFO
+Counting objects: 42% (95/224)
+
+2025-10-06T04:48:39.208Z
+INFO
+Counting objects: 43% (97/224)
+
+2025-10-06T04:48:39.209Z
+INFO
+Counting objects: 44% (99/224)
+
+2025-10-06T04:48:39.210Z
+INFO
+Counting objects: 45% (101/224)
+
+2025-10-06T04:48:39.211Z
+INFO
+Counting objects: 46% (104/224)
+
+2025-10-06T04:48:39.212Z
+INFO
+Counting objects: 47% (106/224)
+
+2025-10-06T04:48:39.213Z
+INFO
+Counting objects: 48% (108/224)
+
+2025-10-06T04:48:39.214Z
+INFO
+Counting objects: 49% (110/224)
+
+2025-10-06T04:48:39.215Z
+INFO
+Counting objects: 50% (112/224)
+
+2025-10-06T04:48:39.216Z
+INFO
+Counting objects: 51% (115/224)
+
+2025-10-06T04:48:39.217Z
+INFO
+Counting objects: 52% (117/224)
+
+2025-10-06T04:48:39.218Z
+INFO
+Counting objects: 53% (119/224)
+
+2025-10-06T04:48:39.219Z
+INFO
+Counting objects: 54% (121/224)
+
+2025-10-06T04:48:39.220Z
+INFO
+Counting objects: 55% (124/224)
+
+2025-10-06T04:48:39.221Z
+INFO
+Counting objects: 56% (126/224)
+
+2025-10-06T04:48:39.222Z
+INFO
+Counting objects: 57% (128/224)
+
+2025-10-06T04:48:39.223Z
+INFO
+Counting objects: 58% (130/224)
+
+2025-10-06T04:48:39.224Z
+INFO
+Counting objects: 59% (133/224)
+
+2025-10-06T04:48:39.225Z
+INFO
+Counting objects: 60% (135/224)
+
+2025-10-06T04:48:39.226Z
+INFO
+Counting objects: 61% (137/224)
+
+2025-10-06T04:48:39.227Z
+INFO
+Counting objects: 62% (139/224)
+
+2025-10-06T04:48:39.228Z
+INFO
+Counting objects: 63% (142/224)
+
+2025-10-06T04:48:39.229Z
+INFO
+Counting objects: 64% (144/224)
+
+2025-10-06T04:48:39.230Z
+INFO
+Counting objects: 65% (146/224)
+
+2025-10-06T04:48:39.231Z
+INFO
+Counting objects: 66% (148/224)
+
+2025-10-06T04:48:39.232Z
+INFO
+Counting objects: 67% (151/224)
+
+2025-10-06T04:48:39.233Z
+INFO
+Counting objects: 68% (153/224)
+
+2025-10-06T04:48:39.234Z
+INFO
+Counting objects: 69% (155/224)
+
+2025-10-06T04:48:39.235Z
+INFO
+Counting objects: 70% (157/224)
+
+2025-10-06T04:48:39.236Z
+INFO
+Counting objects: 71% (160/224)
+
+2025-10-06T04:48:39.237Z
+INFO
+Counting objects: 72% (162/224)
+
+2025-10-06T04:48:39.238Z
+INFO
+Counting objects: 73% (164/224)
+
+2025-10-06T04:48:39.239Z
+INFO
+Counting objects: 74% (166/224)
+
+2025-10-06T04:48:39.240Z
+INFO
+Counting objects: 75% (168/224)
+
+2025-10-06T04:48:39.241Z
+INFO
+Counting objects: 76% (171/224)
+
+2025-10-06T04:48:39.242Z
+INFO
+Counting objects: 77% (173/224)
+
+2025-10-06T04:48:39.243Z
+INFO
+Counting objects: 78% (175/224)
+
+2025-10-06T04:48:39.244Z
+INFO
+Counting objects: 79% (177/224)
+
+2025-10-06T04:48:39.245Z
+INFO
+Counting objects: 80% (180/224)
+
+2025-10-06T04:48:39.246Z
+INFO
+Counting objects: 81% (182/224)
+
+2025-10-06T04:48:39.247Z
+INFO
+Counting objects: 82% (184/224)
+
+2025-10-06T04:48:39.248Z
+INFO
+Counting objects: 83% (186/224)
+
+2025-10-06T04:48:39.249Z
+INFO
+Counting objects: 84% (189/224)
+
+2025-10-06T04:48:39.250Z
+INFO
+Counting objects: 85% (191/224)
+
+2025-10-06T04:48:39.251Z
+INFO
+Counting objects: 86% (193/224)
+
+2025-10-06T04:48:39.252Z
+INFO
+Counting objects: 87% (195/224)
+
+2025-10-06T04:48:39.253Z
+INFO
+Counting objects: 88% (198/224)
+
+2025-10-06T04:48:39.254Z
+INFO
+Counting objects: 89% (200/224)
+
+2025-10-06T04:48:39.255Z
+INFO
+Counting objects: 90% (202/224)
+
+2025-10-06T04:48:39.256Z
+INFO
+Counting objects: 91% (204/224)
+
+2025-10-06T04:48:39.257Z
+INFO
+Counting objects: 92% (207/224)
+
+2025-10-06T04:48:39.258Z
+INFO
+Counting objects: 93% (209/224)
+
+2025-10-06T04:48:39.259Z
+INFO
+Counting objects: 94% (211/224)
+
+2025-10-06T04:48:39.260Z
+INFO
+Counting objects: 95% (213/224)
+
+2025-10-06T04:48:39.261Z
+INFO
+Counting objects: 96% (216/224)
+
+2025-10-06T04:48:39.262Z
+INFO
+Counting objects: 97% (218/224)
+
+2025-10-06T04:48:39.263Z
+INFO
+Counting objects: 98% (220/224)
+
+2025-10-06T04:48:39.264Z
+INFO
+Counting objects: 99% (222/224)
+
+2025-10-06T04:48:39.265Z
+INFO
+Counting objects: 100% (224/224)
+
+2025-10-06T04:48:39.266Z
+INFO
+Counting objects: 100% (224/224), done.
+
+2025-10-06T04:48:39.267Z
+INFO
+Compressing objects: 0% (1/103)
+
+2025-10-06T04:48:39.268Z
+INFO
+Compressing objects: 1% (2/103)
+
+2025-10-06T04:48:39.269Z
+INFO
+Compressing objects: 2% (3/103)
+
+2025-10-06T04:48:39.270Z
+INFO
+Compressing objects: 3% (4/103)
+
+2025-10-06T04:48:39.271Z
+INFO
+Compressing objects: 4% (5/103)
+
+2025-10-06T04:48:39.272Z
+INFO
+Compressing objects: 5% (6/103)
+
+2025-10-06T04:48:39.273Z
+INFO
+Compressing objects: 6% (7/103)
+
+2025-10-06T04:48:39.274Z
+INFO
+Compressing objects: 7% (8/103)
+
+2025-10-06T04:48:39.275Z
+INFO
+Compressing objects: 8% (9/103)
+
+2025-10-06T04:48:39.276Z
+INFO
+Compressing objects: 9% (10/103)
+
+2025-10-06T04:48:39.277Z
+INFO
+Compressing objects: 10% (11/103)
+
+2025-10-06T04:48:39.278Z
+INFO
+Compressing objects: 11% (12/103)
+
+2025-10-06T04:48:39.279Z
+INFO
+Compressing objects: 12% (13/103)
+
+2025-10-06T04:48:39.280Z
+INFO
+Compressing objects: 13% (14/103)
+
+2025-10-06T04:48:39.281Z
+INFO
+Compressing objects: 14% (15/103)
+
+2025-10-06T04:48:39.282Z
+INFO
+Compressing objects: 15% (16/103)
+
+2025-10-06T04:48:39.283Z
+INFO
+Compressing objects: 16% (17/103)
+
+2025-10-06T04:48:39.284Z
+INFO
+Compressing objects: 17% (18/103)
+
+2025-10-06T04:48:39.285Z
+INFO
+Compressing objects: 18% (19/103)
+
+2025-10-06T04:48:39.286Z
+INFO
+Compressing objects: 19% (20/103)
+
+2025-10-06T04:48:39.287Z
+INFO
+Compressing objects: 20% (21/103)
+
+2025-10-06T04:48:39.288Z
+INFO
+Compressing objects: 21% (22/103)
+
+2025-10-06T04:48:39.289Z
+INFO
+Compressing objects: 22% (23/103)
+
+2025-10-06T04:48:39.290Z
+INFO
+Compressing objects: 23% (24/103)
+
+2025-10-06T04:48:39.291Z
+INFO
+Compressing objects: 24% (25/103)
+
+2025-10-06T04:48:39.292Z
+INFO
+Compressing objects: 25% (26/103)
+
+2025-10-06T04:48:39.293Z
+INFO
+Compressing objects: 26% (27/103)
+
+2025-10-06T04:48:39.294Z
+INFO
+Compressing objects: 27% (28/103)
+
+2025-10-06T04:48:39.295Z
+INFO
+Compressing objects: 28% (29/103)
+
+2025-10-06T04:48:39.296Z
+INFO
+Compressing objects: 29% (30/103)
+
+2025-10-06T04:48:39.297Z
+INFO
+Compressing objects: 30% (31/103)
+
+2025-10-06T04:48:39.298Z
+INFO
+Compressing objects: 31% (32/103)
+
+2025-10-06T04:48:39.299Z
+INFO
+Compressing objects: 32% (33/103)
+
+2025-10-06T04:48:39.300Z
+INFO
+Compressing objects: 33% (34/103)
+
+2025-10-06T04:48:39.301Z
+INFO
+Compressing objects: 34% (36/103)
+
+2025-10-06T04:48:39.302Z
+INFO
+Compressing objects: 35% (37/103)
+
+2025-10-06T04:48:39.303Z
+INFO
+Compressing objects: 36% (38/103)
+
+2025-10-06T04:48:39.304Z
+INFO
+Compressing objects: 37% (39/103)
+
+2025-10-06T04:48:39.305Z
+INFO
+Compressing objects: 38% (40/103)
+
+2025-10-06T04:48:39.306Z
+INFO
+Compressing objects: 39% (41/103)
+
+2025-10-06T04:48:39.307Z
+INFO
+Compressing objects: 40% (42/103)
+
+2025-10-06T04:48:39.308Z
+INFO
+Compressing objects: 41% (43/103)
+
+2025-10-06T04:48:39.309Z
+INFO
+Compressing objects: 42% (44/103)
+
+2025-10-06T04:48:39.310Z
+INFO
+Compressing objects: 43% (45/103)
+
+2025-10-06T04:48:39.311Z
+INFO
+Compressing objects: 44% (46/103)
+
+2025-10-06T04:48:39.312Z
+INFO
+Compressing objects: 45% (47/103)
+
+2025-10-06T04:48:39.313Z
+INFO
+Compressing objects: 46% (48/103)
+
+2025-10-06T04:48:39.314Z
+INFO
+Compressing objects: 47% (49/103)
+
+2025-10-06T04:48:39.315Z
+INFO
+Compressing objects: 48% (50/103)
+
+2025-10-06T04:48:39.316Z
+INFO
+Compressing objects: 49% (51/103)
+
+2025-10-06T04:48:39.317Z
+INFO
+Compressing objects: 50% (52/103)
+
+2025-10-06T04:48:39.318Z
+INFO
+Compressing objects: 51% (53/103)
+
+2025-10-06T04:48:39.319Z
+INFO
+Compressing objects: 52% (54/103)
+
+2025-10-06T04:48:39.320Z
+INFO
+Compressing objects: 53% (55/103)
+
+2025-10-06T04:48:39.321Z
+INFO
+Compressing objects: 54% (56/103)
+
+2025-10-06T04:48:39.322Z
+INFO
+Compressing objects: 55% (57/103)
+
+2025-10-06T04:48:39.323Z
+INFO
+Compressing objects: 56% (58/103)
+
+2025-10-06T04:48:39.324Z
+INFO
+Compressing objects: 57% (59/103)
+
+2025-10-06T04:48:39.325Z
+INFO
+Compressing objects: 58% (60/103)
+
+2025-10-06T04:48:39.326Z
+INFO
+Compressing objects: 59% (61/103)
+
+2025-10-06T04:48:39.327Z
+INFO
+Compressing objects: 60% (62/103)
+
+2025-10-06T04:48:39.328Z
+INFO
+Compressing objects: 61% (63/103)
+
+2025-10-06T04:48:39.329Z
+INFO
+Compressing objects: 62% (64/103)
+
+2025-10-06T04:48:39.330Z
+INFO
+Compressing objects: 63% (65/103)
+
+2025-10-06T04:48:39.331Z
+INFO
+Compressing objects: 64% (66/103)
+
+2025-10-06T04:48:39.332Z
+INFO
+Compressing objects: 65% (67/103)
+
+2025-10-06T04:48:39.333Z
+INFO
+Compressing objects: 66% (68/103)
+
+2025-10-06T04:48:39.334Z
+INFO
+Compressing objects: 67% (70/103)
+
+2025-10-06T04:48:39.335Z
+INFO
+Compressing objects: 68% (71/103)
+
+2025-10-06T04:48:39.336Z
+INFO
+Compressing objects: 69% (72/103)
+
+2025-10-06T04:48:39.337Z
+INFO
+Compressing objects: 70% (73/103)
+
+2025-10-06T04:48:39.338Z
+INFO
+Compressing objects: 71% (74/103)
+
+2025-10-06T04:48:39.339Z
+INFO
+Compressing objects: 72% (75/103)
+
+2025-10-06T04:48:39.340Z
+INFO
+Compressing objects: 73% (76/103)
+
+2025-10-06T04:48:39.341Z
+INFO
+Compressing objects: 74% (77/103)
+
+2025-10-06T04:48:39.342Z
+INFO
+Compressing objects: 75% (78/103)
+
+2025-10-06T04:48:39.343Z
+INFO
+Compressing objects: 76% (79/103)
+
+2025-10-06T04:48:39.344Z
+INFO
+Compressing objects: 77% (80/103)
+
+2025-10-06T04:48:39.345Z
+INFO
+Compressing objects: 78% (81/103)
+
+2025-10-06T04:48:39.346Z
+INFO
+Compressing objects: 79% (82/103)
+
+2025-10-06T04:48:39.347Z
+INFO
+Compressing objects: 80% (83/103)
+
+2025-10-06T04:48:39.348Z
+INFO
+Compressing objects: 81% (84/103)
+
+2025-10-06T04:48:39.349Z
+INFO
+Compressing objects: 82% (85/103)
+
+2025-10-06T04:48:39.350Z
+INFO
+Compressing objects: 83% (86/103)
+
+2025-10-06T04:48:39.351Z
+INFO
+Compressing objects: 84% (87/103)
+
+2025-10-06T04:48:39.352Z
+INFO
+Compressing objects: 85% (88/103)
+
+2025-10-06T04:48:39.353Z
+INFO
+Compressing objects: 86% (89/103)
+
+2025-10-06T04:48:39.354Z
+INFO
+Compressing objects: 87% (90/103)
+
+2025-10-06T04:48:39.355Z
+INFO
+Compressing objects: 88% (91/103)
+
+2025-10-06T04:48:39.356Z
+INFO
+Compressing objects: 89% (92/103)
+
+2025-10-06T04:48:39.357Z
+INFO
+Compressing objects: 90% (93/103)
+
+2025-10-06T04:48:39.358Z
+INFO
+Compressing objects: 91% (94/103)
+
+2025-10-06T04:48:39.359Z
+INFO
+Compressing objects: 92% (95/103)
+
+2025-10-06T04:48:39.360Z
+INFO
+Compressing objects: 93% (96/103)
+
+2025-10-06T04:48:39.361Z
+INFO
+Compressing objects: 94% (97/103)
+
+2025-10-06T04:48:39.362Z
+INFO
+Compressing objects: 95% (98/103)
+
+2025-10-06T04:48:39.363Z
+INFO
+Compressing objects: 96% (99/103)
+
+2025-10-06T04:48:39.364Z
+INFO
+Compressing objects: 97% (100/103)
+
+2025-10-06T04:48:39.365Z
+INFO
+Compressing objects: 98% (101/103)
+
+2025-10-06T04:48:39.366Z
+INFO
+Compressing objects: 99% (102/103)
+
+2025-10-06T04:48:39.367Z
+INFO
+Compressing objects: 100% (103/103)
+
+2025-10-06T04:48:39.368Z
+INFO
+Compressing objects: 100% (103/103), done.
+
+2025-10-06T04:48:39.369Z
+INFO
+Total 224 (delta 124), reused 219 (delta 120), pack-reused 0 (from 0)
+
+2025-10-06T04:48:39.370Z
+INFO
+Using dockerignore file: /kaniko/buildcontext/.dockerignore
+
+2025-10-06T04:48:39.371Z
+INFO
+Retrieving image manifest node:20-alpine
+
+2025-10-06T04:48:39.372Z
+INFO
+Retrieving image node:20-alpine from registry index.docker.io
+
+2025-10-06T04:48:39.373Z
+INFO
+Retrieving image manifest node:20-alpine
+
+2025-10-06T04:48:39.374Z
+INFO
+Returning cached image manifest
+
+2025-10-06T04:48:39.375Z
+INFO
+Built cross stage deps: map[]
+
+2025-10-06T04:48:39.376Z
+INFO
+Retrieving image manifest node:20-alpine
+
+2025-10-06T04:48:39.377Z
+INFO
+Returning cached image manifest
+
+2025-10-06T04:48:39.378Z
+INFO
+Retrieving image manifest node:20-alpine
+
+2025-10-06T04:48:39.379Z
+INFO
+Returning cached image manifest
+
+2025-10-06T04:48:39.380Z
+INFO
+Executing 0 build triggers
+
+2025-10-06T04:48:39.381Z
+INFO
+Building stage 'node:20-alpine' [idx: '0', base-idx: '-1']
+
+2025-10-06T04:48:39.382Z
+INFO
+Checking for cached layer registry.containers.back4app.com/back4app2-2e9ad575-18a8-492b-aa14-40241a4fcda3/cache:9e6bbd063c7c6fa2280819f53a78857489c78b1e9cd9a728c0aaf888d6b36b81...
+
+2025-10-06T04:48:39.383Z
+INFO
+No cached layer found for cmd RUN apk add --no-cache python3 make g++ sqlite
+
+2025-10-06T04:48:39.384Z
+INFO
+Resolving srcs [package*.json]...
+
+2025-10-06T04:48:39.385Z
+INFO
+Cmd: EXPOSE
+
+2025-10-06T04:48:39.386Z
+INFO
+Adding exposed port: 5000/tcp
+
+2025-10-06T04:48:39.387Z
+INFO
+Unpacking rootfs as cmd RUN apk add --no-cache python3 make g++ sqlite requires it.
+
+2025-10-06T04:48:41.000Z
+INFO
+RUN apk add --no-cache python3 make g++ sqlite
+
+2025-10-06T04:48:41.001Z
+INFO
+Initializing snapshotter ...
+
+2025-10-06T04:48:41.002Z
+INFO
+Taking snapshot of full filesystem...
+
+2025-10-06T04:48:41.003Z
+INFO
+Cmd: /bin/sh
+
+2025-10-06T04:48:41.004Z
+INFO
+Args: [-c apk add --no-cache python3 make g++ sqlite]
+
+2025-10-06T04:48:41.005Z
+INFO
+Running: [/bin/sh -c apk add --no-cache python3 make g++ sqlite]
+
+2025-10-06T04:48:41.954Z
+INFO
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+
+2025-10-06T04:48:42.029Z
+INFO
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+
+2025-10-06T04:48:42.408Z
+INFO
+(1/30) Installing libstdc++-dev (14.2.0-r6)
+
+2025-10-06T04:48:42.575Z
+INFO
+(2/30) Installing jansson (2.14.1-r0)
+
+2025-10-06T04:48:42.578Z
+INFO
+(3/30) Installing zstd-libs (1.5.7-r0)
+
+2025-10-06T04:48:42.587Z
+INFO
+(4/30) Installing binutils (2.44-r3)
+
+2025-10-06T04:48:42.676Z
+INFO
+(5/30) Installing libgomp (14.2.0-r6)
+
+2025-10-06T04:48:42.681Z
+INFO
+(6/30) Installing libatomic (14.2.0-r6)
+
+2025-10-06T04:48:42.683Z
+INFO
+(7/30) Installing gmp (6.3.0-r3)
+
+2025-10-06T04:48:42.689Z
+INFO
+(8/30) Installing isl26 (0.26-r1)
+
+2025-10-06T04:48:42.709Z
+INFO
+(9/30) Installing mpfr4 (4.2.1_p1-r0)
+
+2025-10-06T04:48:42.717Z
+INFO
+(10/30) Installing mpc1 (1.3.1-r1)
+
+2025-10-06T04:48:42.720Z
+INFO
+(11/30) Installing gcc (14.2.0-r6)
+
+2025-10-06T04:48:43.894Z
+INFO
+(12/30) Installing musl-dev (1.2.5-r10)
+
+2025-10-06T04:48:43.971Z
+INFO
+(13/30) Installing g++ (14.2.0-r6)
+
+2025-10-06T04:48:44.317Z
+INFO
+(14/30) Installing make (4.4.1-r3)
+
+2025-10-06T04:48:44.321Z
+INFO
+(15/30) Installing libbz2 (1.0.8-r6)
+
+2025-10-06T04:48:44.323Z
+INFO
+(16/30) Installing libexpat (2.7.3-r0)
+
+2025-10-06T04:48:44.326Z
+INFO
+(17/30) Installing libffi (3.4.8-r0)
+
+2025-10-06T04:48:44.329Z
+INFO
+(18/30) Installing gdbm (1.24-r0)
+
+2025-10-06T04:48:44.330Z
+INFO
+(19/30) Installing xz-libs (5.8.1-r0)
+
+2025-10-06T04:48:44.334Z
+INFO
+(20/30) Installing mpdecimal (4.0.1-r0)
+
+2025-10-06T04:48:44.337Z
+INFO
+(21/30) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+
+2025-10-06T04:48:44.343Z
+INFO
+(22/30) Installing libncursesw (6.5_p20250503-r0)
+
+2025-10-06T04:48:44.348Z
+INFO
+(23/30) Installing libpanelw (6.5_p20250503-r0)
+
+2025-10-06T04:48:44.349Z
+INFO
+(24/30) Installing readline (8.2.13-r1)
+
+2025-10-06T04:48:44.353Z
+INFO
+(25/30) Installing sqlite-libs (3.49.2-r1)
+
+2025-10-06T04:48:44.370Z
+INFO
+(26/30) Installing python3 (3.12.11-r0)
+
+2025-10-06T04:48:44.589Z
+INFO
+(27/30) Installing python3-pycache-pyc0 (3.12.11-r0)
+
+2025-10-06T04:48:44.718Z
+INFO
+(28/30) Installing pyc (3.12.11-r0)
+
+2025-10-06T04:48:44.719Z
+INFO
+(29/30) Installing python3-pyc (3.12.11-r0)
+
+2025-10-06T04:48:44.720Z
+INFO
+(30/30) Installing sqlite (3.49.2-r1)
+
+2025-10-06T04:48:44.741Z
+INFO
+Executing busybox-1.37.0-r18.trigger
+
+2025-10-06T04:48:44.747Z
+INFO
+OK: 272 MiB in 48 packages
+
+2025-10-06T04:48:44.748Z
+INFO
+Taking snapshot of full filesystem...
+
+2025-10-06T04:48:51.000Z
+INFO
+WORKDIR /app
+
+2025-10-06T04:48:51.001Z
+INFO
+Cmd: workdir
+
+2025-10-06T04:48:51.002Z
+INFO
+Changed working directory to /app
+
+2025-10-06T04:48:51.003Z
+INFO
+Creating directory /app
+
+2025-10-06T04:48:51.004Z
+INFO
+Taking snapshot of files...
+
+2025-10-06T04:48:51.005Z
+INFO
+Resolving srcs [package*.json]...
+
+2025-10-06T04:48:51.006Z
+INFO
+COPY package*.json ./
+
+2025-10-06T04:48:51.007Z
+INFO
+Resolving srcs [package*.json]...
+
+2025-10-06T04:48:51.008Z
+INFO
+Taking snapshot of files...
+
+2025-10-06T04:48:51.009Z
+INFO
+RUN npm ci --only=production
+
+2025-10-06T04:48:51.010Z
+INFO
+Cmd: /bin/sh
+
+2025-10-06T04:48:51.011Z
+INFO
+Args: [-c npm ci --only=production]
+
+2025-10-06T04:48:51.012Z
+INFO
+Running: [/bin/sh -c npm ci --only=production]
+
+2025-10-06T04:48:51.419Z
+ERROR
+npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+
+2025-10-06T04:48:54.235Z
+ERROR
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+
+2025-10-06T04:48:54.303Z
+ERROR
+npm warn deprecated npmlog@6.0.2: This package is no longer supported.
+
+2025-10-06T04:48:54.331Z
+ERROR
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+
+2025-10-06T04:48:54.351Z
+ERROR
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+
+2025-10-06T04:48:54.564Z
+ERROR
+npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
+
+2025-10-06T04:48:54.605Z
+ERROR
+npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
+
+2025-10-06T04:48:54.711Z
+ERROR
+npm warn deprecated gauge@4.0.4: This package is no longer supported.
+
+2025-10-06T04:48:57.316Z
+INFO
+added 234 packages, and audited 235 packages in 6s
+
+2025-10-06T04:48:57.317Z
+INFO
+36 packages are looking for funding
+
+2025-10-06T04:48:57.318Z
+INFO
+run `npm fund` for details
+
+2025-10-06T04:48:57.319Z
+INFO
+found 0 vulnerabilities
+
+2025-10-06T04:48:57.320Z
+ERROR
+npm notice
+
+2025-10-06T04:48:57.321Z
+ERROR
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+
+2025-10-06T04:48:57.322Z
+ERROR
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+
+2025-10-06T04:48:57.323Z
+ERROR
+npm notice To update run: npm install -g npm@11.6.1
+
+2025-10-06T04:48:57.324Z
+ERROR
+npm notice
+
+2025-10-06T04:48:57.325Z
+INFO
+Taking snapshot of full filesystem...
+
+2025-10-06T04:49:02.000Z
+INFO
+COPY . .
+
+2025-10-06T04:49:02.001Z
+INFO
+Taking snapshot of files...
+
+2025-10-06T04:49:02.002Z
+INFO
+RUN mkdir -p transcripts
+
+2025-10-06T04:49:02.003Z
+INFO
+Cmd: /bin/sh
+
+2025-10-06T04:49:02.004Z
+INFO
+Args: [-c mkdir -p transcripts]
+
+2025-10-06T04:49:02.005Z
+INFO
+Running: [/bin/sh -c mkdir -p transcripts]
+
+2025-10-06T04:49:02.006Z
+INFO
+Taking snapshot of full filesystem...
+
+2025-10-06T04:49:03.000Z
+INFO
+No files were changed, appending empty layer to config. No layer added to image.
+
+2025-10-06T04:49:03.001Z
+INFO
+EXPOSE 5000
+
+2025-10-06T04:49:03.002Z
+INFO
+Cmd: EXPOSE
+
+2025-10-06T04:49:03.003Z
+INFO
+Adding exposed port: 5000/tcp
+
+2025-10-06T04:49:03.004Z
+INFO
+No files changed in this command, skipping snapshotting.
+
+2025-10-06T04:49:03.005Z
+INFO
+CMD ["npm", "start"]
+
+2025-10-06T04:49:03.006Z
+INFO
+No files changed in this command, skipping snapshotting.
+
+2025-10-06T04:49:03.007Z
+INFO
+Pushing image to registry.containers.back4app.com/back4app2-2e9ad575-18a8-492b-aa14-40241a4fcda3:43846a90-45dc-432a-9413-ac793edfe07a
+
+2025-10-06T04:49:10.000Z
+INFO
+Pushed registry.containers.back4app.com/back4app2-2e9ad575-18a8-492b-aa14-40241a4fcda3@sha256:fc898c8f0e66a128e74ae3792b2930e464e5ef96b0c4c11cee716be37ecba85a
+
+2025-10-06T04:49:11.467Z
+SYSTEM
+LAUNCHING CONTAINER...
+
+2025-10-06T04:49:21.929Z
+SYSTEM
+CHECKING HEALTH...
+
+2025-10-06T04:49:21.930Z
+SYSTEM
+trying to hit the 5000 port using http
+
+2025-10-06T04:49:21.934Z
+SYSTEM
+it looks that no process is listening to the 5000 port using http
+
+2025-10-06T04:49:21.937Z
+SYSTEM
+trying again in 1s
+
+2025-10-06T04:49:22.937Z
+SYSTEM
+trying to hit the 5000 port using http
+
+2025-10-06T04:49:22.940Z
+SYSTEM
+it looks that no process is listening to the 5000 port using http
+
+2025-10-06T04:49:22.943Z
+SYSTEM
+trying again in 2s
+
+2025-10-06T04:49:24.943Z
+SYSTEM
+trying to hit the 5000 port using http
+
+2025-10-06T04:49:24.946Z
+SYSTEM
+it looks that no process is listening to the 5000 port using http
+
+2025-10-06T04:49:24.949Z
+SYSTEM
+trying again in 3s
+
+2025-10-06T04:49:27.949Z
+SYSTEM
+trying to hit the 5000 port using http
+
+2025-10-06T04:49:31.951Z
+SYSTEM
+http request to the 5000 port timed out after 4s
+
+2025-10-06T04:49:31.957Z
+SYSTEM
+The container exited before becoming healthy. Please check the container logs.
+
+2025-10-06T04:49:31.958Z
+SYSTEM
+deployment failed

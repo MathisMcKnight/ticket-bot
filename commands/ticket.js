@@ -76,6 +76,11 @@ module.exports = {
       sub
         .setName('escalate')
         .setDescription('Escalate current ticket to White House Chief of Staff')
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('transfer')
+        .setDescription('Transfer ticket to a different category')
     ),
 
   async execute(interaction) {
@@ -417,6 +422,54 @@ module.exports = {
 
       await interaction.channel.send({ content: `<@&${escalationRoleId}>`, embeds: [embed] });
       await interaction.reply({ content: '✅ Ticket escalated successfully!', ephemeral: true });
+    }
+
+    if (sub === 'transfer') {
+      const ticket = db.prepare(`SELECT * FROM tickets WHERE channel_id = ?`).get(interaction.channel.id);
+      
+      if (!ticket) {
+        return interaction.reply({ content: '❌ This command can only be used in a ticket channel.', ephemeral: true });
+      }
+
+      if (ticket.status !== 'open') {
+        return interaction.reply({ content: '❌ This ticket is already closed.', ephemeral: true });
+      }
+
+      const { StringSelectMenuBuilder } = require('discord.js');
+
+      const transferMenu = new StringSelectMenuBuilder()
+        .setCustomId('transfer_ticket')
+        .setPlaceholder('Select a category to transfer to...')
+        .addOptions([
+          {
+            label: 'General Inquires',
+            value: '1338827711652565085',
+            emoji: '📝'
+          },
+          {
+            label: 'Internal Affairs',
+            value: '1424653874085494854',
+            emoji: '🔒'
+          },
+          {
+            label: 'Agency Affairs',
+            value: '1424655379001901107',
+            emoji: '📞'
+          },
+          {
+            label: 'Comms Dept',
+            value: '1424656073071001720',
+            emoji: '📢'
+          }
+        ]);
+
+      const row = new ActionRowBuilder().addComponents(transferMenu);
+
+      await interaction.reply({ 
+        content: '🔄 Select a category to transfer this ticket to:',
+        components: [row],
+        ephemeral: true
+      });
     }
   },
 };

@@ -21,16 +21,20 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 ### Feature Specifications
 1.  **Multi-Type Ticket System**: Supports four distinct ticket types (General Inquiry, Press Clearance, Agency Directorate Hotline, White House Internal Affairs Hotline) with dedicated categories and manager roles.
 2.  **Escalation System**: Allows escalation of tickets to a designated "White House Chief of Staff" role and category.
-3.  **Automatic Ticket Numbering**: Assigns sequential ticket numbers for easy tracking.
-4.  **Smart Routing**: Tickets are automatically routed to the correct category and ping appropriate manager roles based on type.
-5.  **Web-Based Transcripts**: Generates and hosts HTML transcripts viewable in browsers via unique, token-based URLs.
-6.  **DM Notifications & Public Transcripts**: Users receive DM notifications with transcript links upon ticket closure, and transcript links are also posted in a designated public channel.
-7.  **Blacklist Management**: Admins can blacklist/unblacklist users with reasons and view the blacklist.
-8.  **Enhanced Command Security**: All commands require "Manage Messages" permission to view, completely hidden from general public. Setup commands restricted to White House Chief of Staff role only.
-9.  **Required Close Reasons**: All ticket closures necessitate a reason (5-500 characters) recorded in transcripts.
-10. **Automated Channel Deletion**: Closed tickets result in automatic channel deletion after transcript archiving.
-11. **Transcript History**: Admins can view transcript metadata for any user.
-12. **Modal-Based Setup**: Interactive wizard for server configuration using modals.
+3.  **Transfer System**: Allows ticket managers to transfer tickets between four predefined categories (General Inquires, Internal Affairs, Agency Affairs, Comms Dept) with automatic permission updates.
+4.  **Automatic Ticket Numbering**: Assigns sequential ticket numbers for easy tracking.
+5.  **Smart Routing**: Tickets are automatically routed to the correct category and ping appropriate manager roles based on type.
+6.  **Web-Based Transcripts**: Generates and hosts HTML transcripts viewable in browsers via unique, token-based URLs.
+7.  **DM Notifications & Public Transcripts**: Users receive DM notifications with transcript links upon ticket closure, and transcript links are also posted in a designated public channel.
+8.  **Blacklist Management**: Admins can blacklist/unblacklist users with reasons and view the blacklist.
+9.  **Enhanced Command Security**: All commands require "Manage Messages" permission to view, completely hidden from general public. Setup commands restricted to White House Chief of Staff role only.
+10. **Required Close Reasons**: All ticket closures necessitate a reason (5-500 characters) recorded in transcripts.
+11. **Automated Channel Deletion**: Closed tickets result in automatic channel deletion after transcript archiving.
+12. **Transcript History**: Admins can view transcript metadata for any user.
+13. **Ticket Template**: Every new ticket includes an automatic embed prompting users to provide their Roblox Username and Purpose for Opening Ticket.
+14. **Enhanced Panel**: Ticket panel includes concise 1-2 word descriptions for each ticket type (Questions & Support, Media Authorization, Agency Matters, Internal Reports).
+15. **Streamlined Setup**: Two-part modal setup wizard that collects all configuration in one flow - Part 1 (General Inquiry, Press Clearance, Agency Hotline Category) and Part 2 (Agency Hotline Role, Internal Affairs, Escalation, Transcript Channel).
+16. **Quick Config Commands**: Individual `/config` subcommands for fast adjustments using Discord's native role/channel selectors, restricted to Chief of Staff role only.
 
 ### System Design Choices
 -   **Core Files**: `index.js` (main entry), `database.js` (DB setup).

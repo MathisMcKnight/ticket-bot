@@ -17,52 +17,53 @@ module.exports = {
       });
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle('🎫 Ticket System Setup')
-      .setDescription('Click the buttons below to configure each ticket type and the transcript channel.\n\n**Setup Steps:**\n1. Configure General Inquiry\n2. Configure Press Clearance\n3. Configure Agency Hotline\n4. Configure Internal Affairs\n5. Configure Escalation & Transcript')
-      .setColor('#0A235B')
-      .addFields(
-        { name: '📋 How to find IDs', value: 'Enable Developer Mode in Discord settings, then right-click channels/roles and click "Copy ID"' }
-      );
+    const modal = new ModalBuilder()
+      .setCustomId('setup_modal_part1')
+      .setTitle('Ticket System Setup (1/2)');
 
-    const row1 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('setup_general_inquiry')
-        .setLabel('General Inquiry')
-        .setStyle(ButtonStyle.Primary)
-        .setEmoji('📝'),
-      new ButtonBuilder()
-        .setCustomId('setup_press_clearance')
-        .setLabel('Press Clearance')
-        .setStyle(ButtonStyle.Primary)
-        .setEmoji('📰')
+    const generalCategoryInput = new TextInputBuilder()
+      .setCustomId('general_inquiry_category')
+      .setLabel('General Inquiry - Category ID')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Right-click category → Copy ID')
+      .setRequired(false);
+
+    const generalRoleInput = new TextInputBuilder()
+      .setCustomId('general_inquiry_role')
+      .setLabel('General Inquiry - Manager Role ID')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Right-click role → Copy ID')
+      .setRequired(false);
+
+    const pressCategoryInput = new TextInputBuilder()
+      .setCustomId('press_clearance_category')
+      .setLabel('Press Clearance - Category ID')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Right-click category → Copy ID')
+      .setRequired(false);
+
+    const pressRoleInput = new TextInputBuilder()
+      .setCustomId('press_clearance_role')
+      .setLabel('Press Clearance - Manager Role ID')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Right-click role → Copy ID')
+      .setRequired(false);
+
+    const agencyCategoryInput = new TextInputBuilder()
+      .setCustomId('agency_hotline_category')
+      .setLabel('Agency Hotline - Category ID')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Right-click category → Copy ID')
+      .setRequired(false);
+
+    modal.addComponents(
+      new ActionRowBuilder().addComponents(generalCategoryInput),
+      new ActionRowBuilder().addComponents(generalRoleInput),
+      new ActionRowBuilder().addComponents(pressCategoryInput),
+      new ActionRowBuilder().addComponents(pressRoleInput),
+      new ActionRowBuilder().addComponents(agencyCategoryInput)
     );
 
-    const row2 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('setup_agency_hotline')
-        .setLabel('Agency Hotline')
-        .setStyle(ButtonStyle.Primary)
-        .setEmoji('📞'),
-      new ButtonBuilder()
-        .setCustomId('setup_internal_affairs')
-        .setLabel('Internal Affairs')
-        .setStyle(ButtonStyle.Primary)
-        .setEmoji('🔒')
-    );
-
-    const row3 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('setup_escalation_transcript')
-        .setLabel('Escalation & Transcript')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji('⚡')
-    );
-
-    await interaction.reply({
-      embeds: [embed],
-      components: [row1, row2, row3],
-      ephemeral: true
-    });
+    await interaction.showModal(modal);
   },
 };

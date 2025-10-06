@@ -33,22 +33,22 @@ module.exports = {
       .addOptions([
         {
           label: 'General Inquiry',
-          description: 'Ask a general question',
+          description: 'Questions & Support',
           value: 'general_inquiry',
         },
         {
           label: 'Press Clearance request',
-          description: 'Request press clearance',
+          description: 'Media Authorization',
           value: 'press_clearance',
         },
         {
           label: 'Agency Directorate Hotline',
-          description: 'Contact the Agency Directorate',
+          description: 'Agency Matters',
           value: 'agency_hotline',
         },
         {
           label: 'White House Internal Affairs Hotline',
-          description: 'Report internal affairs matter',
+          description: 'Internal Reports',
           value: 'internal_affairs',
         },
       ]);

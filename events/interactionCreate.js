@@ -97,6 +97,18 @@ module.exports = {
       );
 
       await channel.send({ content: `<@&${roleId}>`, embeds: [embed], components: [row] });
+
+      const templateEmbed = new EmbedBuilder()
+        .setTitle('📝 Please Provide Information')
+        .setDescription('To help us assist you better, please provide the following information:')
+        .addFields(
+          { name: 'Roblox Username', value: '*Your Roblox username*', inline: false },
+          { name: 'Purpose for Opening Ticket', value: '*Describe why you opened this ticket*', inline: false }
+        )
+        .setColor('#0A235B')
+        .setFooter({ text: 'Please fill out this template in your next message' });
+
+      await channel.send({ embeds: [templateEmbed] });
       await interaction.reply({ content: `✅ Ticket created: ${channel}`, ephemeral: true });
     }
 
@@ -132,135 +144,119 @@ module.exports = {
         }
         return await interaction.reply({ content: `🎟️ Ticket claimed by ${interaction.user.tag}` });
       }
+    }
 
-      if (interaction.customId === 'setup_general_inquiry') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_general_inquiry')
-          .setTitle('General Inquiry Setup');
-
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
-
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+    if (interaction.isStringSelectMenu() && interaction.customId === 'transfer_ticket') {
+      const db = require('../database');
+      const categoryId = interaction.values[0];
+      
+      const ticket = db.prepare(`SELECT * FROM tickets WHERE channel_id = ?`).get(interaction.channel.id);
+      
+      if (!ticket) {
+        return interaction.update({ content: '❌ This is not a valid ticket channel.', components: [] });
       }
 
-      if (interaction.customId === 'setup_press_clearance') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_press_clearance')
-          .setTitle('Press Clearance Setup');
+      const categoryNames = {
+        '1338827711652565085': 'General Inquires',
+        '1424653874085494854': 'Internal Affairs',
+        '1424655379001901107': 'Agency Affairs',
+        '1424656073071001720': 'Comms Dept'
+      };
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+      const config = db.prepare(`SELECT * FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+      
+      const categoryToRoleMapping = {
+        '1338827711652565085': config?.general_inquiry_role_id,
+        '1424653874085494854': config?.internal_affairs_role_id,
+        '1424655379001901107': config?.agency_hotline_role_id,
+        '1424656073071001720': config?.press_clearance_role_id
+      };
 
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
+      const newRoleId = categoryToRoleMapping[categoryId];
 
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
-
-        return await interaction.showModal(modal);
+      if (!newRoleId) {
+        return interaction.update({ 
+          content: '❌ Target category not configured. Please ask an admin to run /setup.', 
+          components: [] 
+        });
       }
 
-      if (interaction.customId === 'setup_agency_hotline') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_agency_hotline')
-          .setTitle('Agency Hotline Setup');
-
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
-
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
-
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
+      try {
+        const currentPermissions = interaction.channel.permissionOverwrites.cache;
+        const oldRoleOverwrites = currentPermissions.filter(p => 
+          p.type === 0 && p.id !== interaction.guild.id && p.id !== ticket.user_id
         );
 
-        return await interaction.showModal(modal);
+        for (const overwrite of oldRoleOverwrites.values()) {
+          await interaction.channel.permissionOverwrites.delete(overwrite.id);
+        }
+
+        await interaction.channel.permissionOverwrites.create(newRoleId, {
+          ViewChannel: true,
+          SendMessages: true
+        });
+
+        await interaction.channel.setParent(categoryId);
+        
+        const transferEmbed = new EmbedBuilder()
+          .setTitle('🔄 Ticket Transferred')
+          .setDescription(`This ticket has been transferred to **${categoryNames[categoryId]}**\n\n**Transferred by:** ${interaction.user}\n**New Support Team:** <@&${newRoleId}>`)
+          .setColor('#00A8FF')
+          .setTimestamp();
+
+        await interaction.channel.send({ content: `<@&${newRoleId}>`, embeds: [transferEmbed] });
+        await interaction.update({ content: `✅ Ticket transferred to ${categoryNames[categoryId]}!`, components: [] });
+      } catch (error) {
+        console.error('Transfer error:', error);
+        await interaction.update({ content: '❌ Failed to transfer ticket. Please check category permissions.', components: [] });
       }
+    }
 
-      if (interaction.customId === 'setup_internal_affairs') {
+    if (interaction.isButton()) {
+      if (interaction.customId === 'setup_continue_part2') {
         const modal = new ModalBuilder()
-          .setCustomId('modal_internal_affairs')
-          .setTitle('Internal Affairs Setup');
+          .setCustomId('setup_modal_part2')
+          .setTitle('Ticket System Setup (2/2)');
 
-        const categoryInput = new TextInputBuilder()
-          .setCustomId('category_id')
-          .setLabel('Category ID')
-          .setStyle(TextInputStyle.Short)
-          .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
-
-        const roleInput = new TextInputBuilder()
-          .setCustomId('role_id')
-          .setLabel('Manager Role ID')
+        const agencyRoleInput = new TextInputBuilder()
+          .setCustomId('agency_hotline_role')
+          .setLabel('Agency Hotline - Manager Role ID')
           .setStyle(TextInputStyle.Short)
           .setPlaceholder('Right-click role → Copy ID')
-          .setRequired(true);
+          .setRequired(false);
 
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(categoryInput),
-          new ActionRowBuilder().addComponents(roleInput)
-        );
+        const internalCategoryInput = new TextInputBuilder()
+          .setCustomId('internal_affairs_category')
+          .setLabel('Internal Affairs - Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(false);
 
-        return await interaction.showModal(modal);
-      }
-
-      if (interaction.customId === 'setup_escalation_transcript') {
-        const modal = new ModalBuilder()
-          .setCustomId('modal_escalation_transcript')
-          .setTitle('Escalation & Transcript Setup');
+        const internalRoleInput = new TextInputBuilder()
+          .setCustomId('internal_affairs_role')
+          .setLabel('Internal Affairs - Manager Role ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click role → Copy ID')
+          .setRequired(false);
 
         const escalationCategoryInput = new TextInputBuilder()
-          .setCustomId('escalation_category_id')
+          .setCustomId('escalation_category')
           .setLabel('Escalation Category ID')
           .setStyle(TextInputStyle.Short)
           .setPlaceholder('Right-click category → Copy ID')
-          .setRequired(true);
+          .setRequired(false);
 
         const transcriptChannelInput = new TextInputBuilder()
-          .setCustomId('transcript_channel_id')
+          .setCustomId('transcript_channel')
           .setLabel('Transcript Channel ID')
           .setStyle(TextInputStyle.Short)
           .setPlaceholder('Right-click channel → Copy ID')
-          .setRequired(true);
+          .setRequired(false);
 
         modal.addComponents(
+          new ActionRowBuilder().addComponents(agencyRoleInput),
+          new ActionRowBuilder().addComponents(internalCategoryInput),
+          new ActionRowBuilder().addComponents(internalRoleInput),
           new ActionRowBuilder().addComponents(escalationCategoryInput),
           new ActionRowBuilder().addComponents(transcriptChannelInput)
         );
@@ -268,6 +264,7 @@ module.exports = {
         return await interaction.showModal(modal);
       }
     }
+
 
     if (interaction.isModalSubmit() && interaction.customId === 'close_reason_modal') {
       const db = require('../database');
@@ -377,84 +374,119 @@ module.exports = {
       }
     }
 
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_general_inquiry') {
+    if (interaction.isModalSubmit() && interaction.customId === 'setup_modal_part1') {
       const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
+      
+      const generalCategory = interaction.fields.getTextInputValue('general_inquiry_category').trim();
+      const generalRole = interaction.fields.getTextInputValue('general_inquiry_role').trim();
+      const pressCategory = interaction.fields.getTextInputValue('press_clearance_category').trim();
+      const pressRole = interaction.fields.getTextInputValue('press_clearance_role').trim();
+      const agencyCategory = interaction.fields.getTextInputValue('agency_hotline_category').trim();
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          general_inquiry_category_id = excluded.general_inquiry_category_id,
-          general_inquiry_role_id = excluded.general_inquiry_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
+      let updates = [];
+      let values = [interaction.guild.id];
 
-      await interaction.reply({ content: '✅ General Inquiry configuration saved!', ephemeral: true });
+      if (generalCategory && generalRole) {
+        db.prepare(`
+          INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
+          VALUES (?, ?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            general_inquiry_category_id = excluded.general_inquiry_category_id,
+            general_inquiry_role_id = excluded.general_inquiry_role_id
+        `).run(interaction.guild.id, generalCategory, generalRole);
+        updates.push('✅ General Inquiry');
+      }
+
+      if (pressCategory && pressRole) {
+        db.prepare(`
+          INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
+          VALUES (?, ?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            press_clearance_category_id = excluded.press_clearance_category_id,
+            press_clearance_role_id = excluded.press_clearance_role_id
+        `).run(interaction.guild.id, pressCategory, pressRole);
+        updates.push('✅ Press Clearance');
+      }
+
+      if (agencyCategory) {
+        updates.push('⚠️ Agency Hotline (incomplete - need role in Part 2)');
+      }
+
+      const continueButton = new ButtonBuilder()
+        .setCustomId('setup_continue_part2')
+        .setLabel('Continue to Part 2')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('➡️');
+
+      const row = new ActionRowBuilder().addComponents(continueButton);
+
+      const summary = updates.length > 0 ? updates.join('\n') : '⚠️ No complete configurations saved';
+
+      await interaction.reply({
+        content: `**Setup Part 1 Saved!**\n\n${summary}\n\n📝 Click below to configure remaining ticket types and settings:`,
+        components: [row],
+        ephemeral: true
+      });
     }
 
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_press_clearance') {
+    if (interaction.isModalSubmit() && interaction.customId === 'setup_modal_part2') {
       const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
+      
+      const agencyRole = interaction.fields.getTextInputValue('agency_hotline_role').trim();
+      const internalCategory = interaction.fields.getTextInputValue('internal_affairs_category').trim();
+      const internalRole = interaction.fields.getTextInputValue('internal_affairs_role').trim();
+      const escalationCategory = interaction.fields.getTextInputValue('escalation_category').trim();
+      const transcriptChannel = interaction.fields.getTextInputValue('transcript_channel').trim();
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          press_clearance_category_id = excluded.press_clearance_category_id,
-          press_clearance_role_id = excluded.press_clearance_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
+      let updates = [];
 
-      await interaction.reply({ content: '✅ Press Clearance configuration saved!', ephemeral: true });
-    }
+      if (agencyRole) {
+        const config = db.prepare(`SELECT agency_hotline_category_id FROM configs WHERE guild_id = ?`).get(interaction.guild.id);
+        if (config && config.agency_hotline_category_id) {
+          db.prepare(`
+            UPDATE configs SET agency_hotline_role_id = ? WHERE guild_id = ?
+          `).run(agencyRole, interaction.guild.id);
+          updates.push('✅ Agency Hotline');
+        }
+      }
 
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_agency_hotline') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
+      if (internalCategory && internalRole) {
+        db.prepare(`
+          INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
+          VALUES (?, ?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            internal_affairs_category_id = excluded.internal_affairs_category_id,
+            internal_affairs_role_id = excluded.internal_affairs_role_id
+        `).run(interaction.guild.id, internalCategory, internalRole);
+        updates.push('✅ Internal Affairs');
+      }
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, agency_hotline_category_id, agency_hotline_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          agency_hotline_category_id = excluded.agency_hotline_category_id,
-          agency_hotline_role_id = excluded.agency_hotline_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
+      if (escalationCategory) {
+        db.prepare(`
+          INSERT INTO configs (guild_id, escalation_category_id) 
+          VALUES (?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            escalation_category_id = excluded.escalation_category_id
+        `).run(interaction.guild.id, escalationCategory);
+        updates.push('✅ Escalation Category');
+      }
 
-      await interaction.reply({ content: '✅ Agency Hotline configuration saved!', ephemeral: true });
-    }
+      if (transcriptChannel) {
+        db.prepare(`
+          INSERT INTO configs (guild_id, transcript_channel_id) 
+          VALUES (?, ?)
+          ON CONFLICT(guild_id) DO UPDATE SET 
+            transcript_channel_id = excluded.transcript_channel_id
+        `).run(interaction.guild.id, transcriptChannel);
+        updates.push('✅ Transcript Channel');
+      }
 
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_internal_affairs') {
-      const db = require('../database');
-      const categoryId = interaction.fields.getTextInputValue('category_id');
-      const roleId = interaction.fields.getTextInputValue('role_id');
+      const summary = updates.length > 0 ? updates.join('\n') : '⚠️ No configurations saved';
 
-      db.prepare(`
-        INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          internal_affairs_category_id = excluded.internal_affairs_category_id,
-          internal_affairs_role_id = excluded.internal_affairs_role_id
-      `).run(interaction.guild.id, categoryId, roleId);
-
-      await interaction.reply({ content: '✅ Internal Affairs configuration saved!', ephemeral: true });
-    }
-
-    if (interaction.isModalSubmit() && interaction.customId === 'modal_escalation_transcript') {
-      const db = require('../database');
-      const escalationCategoryId = interaction.fields.getTextInputValue('escalation_category_id');
-      const transcriptChannelId = interaction.fields.getTextInputValue('transcript_channel_id');
-
-      db.prepare(`
-        INSERT INTO configs (guild_id, escalation_category_id, transcript_channel_id) 
-        VALUES (?, ?, ?)
-        ON CONFLICT(guild_id) DO UPDATE SET 
-          escalation_category_id = excluded.escalation_category_id,
-          transcript_channel_id = excluded.transcript_channel_id
-      `).run(interaction.guild.id, escalationCategoryId, transcriptChannelId);
-
-      await interaction.reply({ content: '✅ Escalation & Transcript configuration saved!', ephemeral: true });
+      await interaction.reply({
+        content: `**Setup Part 2 Saved!**\n\n${summary}\n\n🎉 Your ticket system is now configured!`,
+        ephemeral: true
+      });
     }
 
   },
