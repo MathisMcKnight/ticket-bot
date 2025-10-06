@@ -38,19 +38,19 @@ module.exports = {
       const user = interaction.options.getUser('user');
       const reason = interaction.options.getString('reason');
 
-      db.run(`INSERT OR REPLACE INTO blacklists (user_id, reason) VALUES (?, ?)`, [user.id, reason]);
+      db.prepare(`INSERT OR REPLACE INTO blacklists (user_id) VALUES (?)`).run(user.id);
       return interaction.reply({ content: `🚫 ${user.tag} was blacklisted for: ${reason}`, ephemeral: true });
     }
 
     if (sub === 'admin') {
-      db.all(`SELECT * FROM tickets WHERE status = 'open'`, async (err, rows) => {
-        if (err) return console.error(err);
-        if (rows.length === 0) {
-          return interaction.reply({ content: 'No open tickets.', ephemeral: true });
-        }
-        const list = rows.map(r => `• <#${r.channel_id}> — <@${r.user_id}>`).join('\n');
-        await interaction.reply({ content: `📋 Open Tickets:\n${list}`, ephemeral: true });
-      });
+      const rows = db.prepare(`SELECT * FROM tickets WHERE status = 'open'`).all();
+      
+      if (rows.length === 0) {
+        return interaction.reply({ content: 'No open tickets.', ephemeral: true });
+      }
+      
+      const list = rows.map(r => `• <#${r.channel_id}> — <@${r.user_id}>`).join('\n');
+      await interaction.reply({ content: `📋 Open Tickets:\n${list}`, ephemeral: true });
     }
   },
 };
