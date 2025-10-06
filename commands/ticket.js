@@ -195,7 +195,8 @@ module.exports = {
 
         db.prepare(`UPDATE tickets SET status = 'deleted' WHERE channel_id = ?`).run(channel.id);
 
-        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const domain = process.env.DOMAIN || process.env.REPLIT_DEV_DOMAIN || process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:5000';
+        const transcriptUrl = `https://${domain}/transcripts/${token}`;
         const viewButton = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setLabel('📄 View Transcript')
@@ -297,7 +298,8 @@ module.exports = {
               filePath
             );
 
-            const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+            const domain = process.env.DOMAIN || process.env.REPLIT_DEV_DOMAIN || process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:5000';
+            const transcriptUrl = `https://${domain}/transcripts/${token}`;
             const viewButton = new ActionRowBuilder().addComponents(
               new ButtonBuilder()
                 .setLabel('📄 View Transcript')
