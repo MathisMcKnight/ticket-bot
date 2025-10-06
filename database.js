@@ -11,7 +11,7 @@ const initializeDatabase = async () => {
     await client.query(`
       CREATE TABLE IF NOT EXISTS tickets (
         id SERIAL PRIMARY KEY,
-        ticket_number INTEGER,
+        ticket_number INTEGER UNIQUE,
         user_id TEXT,
         channel_id TEXT,
         status TEXT,
