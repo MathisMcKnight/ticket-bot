@@ -37,15 +37,37 @@ module.exports = {
       }
 
       const ticketTypes = {
-        'general': 'General Inquiry',
-        'support': 'Support Request',
-        'escalate': 'Escalation'
+        'general_inquiry': 'General Inquiry',
+        'press_clearance': 'Press Clearance request',
+        'agency_hotline': 'Agency Directorate Hotline',
+        'internal_affairs': 'White House Internal Affairs Hotline'
       };
+
+      const categoryMapping = {
+        'general_inquiry': config.general_inquiry_category_id,
+        'press_clearance': config.press_clearance_category_id,
+        'agency_hotline': config.agency_hotline_category_id,
+        'internal_affairs': config.internal_affairs_category_id
+      };
+
+      const roleMapping = {
+        'general_inquiry': config.general_inquiry_role_id,
+        'press_clearance': config.press_clearance_role_id,
+        'agency_hotline': config.agency_hotline_role_id,
+        'internal_affairs': config.internal_affairs_role_id
+      };
+
+      const categoryId = categoryMapping[choice];
+      const roleId = roleMapping[choice];
+
+      if (!categoryId || !roleId) {
+        return interaction.reply({ content: `⚠️ This ticket type is not configured yet. Please ask an admin to run /setup.`, ephemeral: true });
+      }
 
       const lastTicket = db.prepare(`SELECT MAX(ticket_number) as max_num FROM tickets`).get();
       const ticketNumber = (lastTicket?.max_num || 0) + 1;
 
-      const category = interaction.guild.channels.cache.get(config.category_id);
+      const category = interaction.guild.channels.cache.get(categoryId);
       const channel = await interaction.guild.channels.create({
         name: `ticket-${ticketNumber}`,
         type: 0,
@@ -53,7 +75,7 @@ module.exports = {
         permissionOverwrites: [
           { id: interaction.guild.id, deny: ['ViewChannel'] },
           { id: interaction.user.id, allow: ['ViewChannel', 'SendMessages'] },
-          { id: config.support_role_id, allow: ['ViewChannel', 'SendMessages'] },
+          { id: roleId, allow: ['ViewChannel', 'SendMessages'] },
         ],
       });
 
@@ -74,7 +96,7 @@ module.exports = {
         new ButtonBuilder().setCustomId('close_ticket').setLabel('Close').setStyle(ButtonStyle.Danger)
       );
 
-      await channel.send({ content: `<@&${config.support_role_id}>`, embeds: [embed], components: [row] });
+      await channel.send({ content: `<@&${roleId}>`, embeds: [embed], components: [row] });
       await interaction.reply({ content: `✅ Ticket created: ${channel}`, ephemeral: true });
     }
 
