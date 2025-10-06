@@ -62,7 +62,14 @@ addColumnIfNotExists('tickets', 'ticket_number', 'INTEGER');
 addColumnIfNotExists('configs', 'transcript_channel_id', 'TEXT');
 addColumnIfNotExists('transcripts', 'ticket_number', 'INTEGER');
 addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
-addColumnIfNotExists('transcripts', 'token', 'TEXT UNIQUE');
+addColumnIfNotExists('transcripts', 'token', 'TEXT');
 addColumnIfNotExists('transcripts', 'file_path', 'TEXT');
+
+// Create unique index for token column if it doesn't exist
+try {
+  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_transcripts_token ON transcripts(token)`);
+} catch (error) {
+  console.error('Error creating unique index:', error.message);
+}
 
 module.exports = db;
