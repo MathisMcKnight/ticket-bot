@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    build: .
+    container_name: ticket-bot
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data.db:/app/data.db
+      - ./transcripts:/app/transcripts
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
+      - GUILD_ID=${GUILD_ID}
+    env_file:
+      - .env
