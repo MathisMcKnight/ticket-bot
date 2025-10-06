@@ -35,21 +35,24 @@ This is a Discord bot designed to manage support tickets within Discord servers.
 ```
 
 ### Features
-1. **Ticket Creation** - Users can create support tickets via interactive panel
-2. **Ticket Type Tracking** - Tracks ticket types (General Inquiry, Support Request, Escalation)
-3. **Complete Transcript System** - Saves full message history when tickets are closed or deleted
-4. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
-5. **Admin-Only Commands** - All commands require Administrator permissions
-6. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
-7. **Channel Locking** - Closed tickets prevent all users (including staff) from sending messages
-8. **Transcript Viewing** - View saved transcripts for any user
-9. **Server Configuration** - Admin command to set up ticket categories and roles
+1. **Ticket Creation** - Users can create support tickets via interactive panel with automatic numbering
+2. **Ticket Numbering** - Automatic sequential ticket numbers (#1, #2, #3, etc.) displayed in channels and embeds
+3. **Ticket Type Tracking** - Tracks ticket types (General Inquiry, Support Request, Escalation)
+4. **Complete Transcript System** - Saves full message history when tickets are closed or deleted with close reasons
+5. **Public Transcript Channel** - Designated channel where all transcripts are posted with interactive view buttons
+6. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
+7. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
+8. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
+9. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
+10. **Channel Locking** - Closed tickets prevent all users (including staff) from sending messages
+11. **Transcript Viewing** - View saved transcripts for any user, plus public access via buttons
+12. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
 
 ### Database Schema
-- **tickets** - Stores ticket information (user_id, channel_id, status, ticket_type, created_at)
-- **configs** - Server configurations (category_id, support_role_id)
+- **tickets** - Stores ticket information (id, ticket_number, user_id, channel_id, status, ticket_type, created_at)
+- **configs** - Server configurations (guild_id, category_id, support_role_id, transcript_channel_id)
 - **blacklists** - Blacklisted users (user_id, reason, blacklisted_at)
-- **transcripts** - Complete message history (ticket_id, channel_id, user_id, user_tag, ticket_type, messages, closed_at)
+- **transcripts** - Complete message history (id, ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, closed_at)
 
 ## Dependencies
 - `discord.js` (^14.22.1) - Discord API wrapper
@@ -82,22 +85,54 @@ The bot runs as a background workflow named "Discord Bot" that executes `npm sta
 All commands require Administrator permissions:
 
 ### Setup Commands
-- `/setup` - Configure the ticket system (category & support role)
+- `/setup <category> <supportrole> <transcriptchannel>` - Configure the ticket system (category, support role, and transcript channel)
 - `/panel` - Create ticket panel for users to open tickets
 - `/help` - Display all available commands with descriptions
 
 ### Ticket Management Commands
-- `/ticket admin` - List all open tickets with types
+- `/ticket admin` - List all open tickets with ticket numbers and types
 - `/ticket blacklist <user> <reason>` - Blacklist a user from creating tickets
 - `/ticket unblacklist <user>` - Remove a user from the blacklist
 - `/ticket list-blacklist` - Show all blacklisted users with reasons
-- `/ticket delete <channel>` - Delete a ticket channel and save complete transcript
-- `/ticket close-all` - Close and lock all open tickets
+- `/ticket delete <channel> <reason>` - Delete a ticket channel with reason and save complete transcript
+- `/ticket close-all <reason>` - Close and lock all open tickets with reason
 - `/ticket transcript <user>` - View saved transcripts for a user
 
 ## Recent Changes
 
-### 2025-10-06 (Latest Update): Complete Feature Overhaul
+### 2025-10-06 (Latest Update): Advanced Ticket System with Public Transcripts
+- **🎫 Ticket Numbering System**
+  - Added automatic sequential ticket numbering (#1, #2, #3, etc.)
+  - Ticket numbers displayed in channel names (ticket-1, ticket-2, etc.)
+  - Ticket numbers shown in all embeds and admin lists
+  - Stored in database for permanent tracking
+  
+- **📜 Public Transcript Channel**
+  - Added transcript_channel_id to server configuration
+  - /setup now requires selecting a designated transcript channel
+  - All closed/deleted tickets automatically post transcript embeds to public channel
+  - Interactive "View Transcript" buttons allow users to view full transcripts
+  - Transcripts show ticket number, user, type, closer, reason, and message count
+  
+- **🔒 Admin-Only Ticket Controls**
+  - Close button now requires Administrator permission (blocks non-admins)
+  - Claim button now requires Administrator permission (blocks non-admins)
+  - Non-admins receive clear error message when attempting to use buttons
+  
+- **📝 Required Close Reasons**
+  - Close button now shows modal requiring 5-500 character reason
+  - /ticket delete requires reason parameter
+  - /ticket close-all requires reason parameter
+  - All reasons saved in transcripts table and displayed in embeds
+  - Close reasons shown in ticket channels and transcript channel posts
+  
+- **🗄️ Database Schema Updates**
+  - Added ticket_number column to tickets table with auto-increment
+  - Added transcript_channel_id to configs table
+  - Added ticket_number and close_reason columns to transcripts table
+  - Updated all commands to use new schema
+
+### 2025-10-06 (Previous Update): Complete Feature Overhaul
 - **Transcript System**
   - Implemented complete message pagination (fetches ALL messages, not just 100)
   - Saves full conversation history when tickets are closed or deleted
@@ -121,11 +156,6 @@ All commands require Administrator permissions:
   - Implemented proper channel locking (denies SendMessages for everyone, ticket creator, and support role)
   - Added visual lock confirmation message when tickets are closed
   - Fixed database operations to use better-sqlite3 synchronous API
-  
-- **Database Schema Updates**
-  - Added ticket_type and created_at to tickets table
-  - Added reason and blacklisted_at to blacklists table
-  - Created new transcripts table for message history storage
 
 ### 2025-10-06 (Initial): Import and Setup
   - Installed dependencies via npm
