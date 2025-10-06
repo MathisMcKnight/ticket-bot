@@ -62,5 +62,7 @@ addColumnIfNotExists('tickets', 'ticket_number', 'INTEGER');
 addColumnIfNotExists('configs', 'transcript_channel_id', 'TEXT');
 addColumnIfNotExists('transcripts', 'ticket_number', 'INTEGER');
 addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
+addColumnIfNotExists('transcripts', 'token', 'TEXT UNIQUE');
+addColumnIfNotExists('transcripts', 'file_path', 'TEXT');
 
 module.exports = db;
