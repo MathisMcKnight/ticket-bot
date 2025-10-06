@@ -79,7 +79,7 @@ module.exports = {
       
       const embed = new EmbedBuilder()
         .setTitle('📋 Open Tickets')
-        .setDescription(rows.map(r => `• <#${r.channel_id}> — <@${r.user_id}> (${r.ticket_type || 'N/A'})`).join('\n'))
+        .setDescription(rows.map(r => `• **#${r.ticket_number}** <#${r.channel_id}> — <@${r.user_id}> (${r.ticket_type || 'N/A'})`).join('\n'))
         .setColor('#0A235B')
         .setFooter({ text: `Total: ${rows.length} ticket(s)` });
 

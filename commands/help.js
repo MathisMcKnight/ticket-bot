@@ -8,20 +8,15 @@ module.exports = {
   async execute(interaction) {
     const embed = new EmbedBuilder()
       .setTitle('📚 Ticket Bot Commands')
-      .setDescription('All commands require Administrator permissions')
+      .setDescription('**All commands require Administrator permissions**\n\n**✨ New Features:**\n• Automatic ticket numbering\n• Required close reasons via modal\n• Admin-only close/claim buttons\n• Public transcript channel with interactive buttons')
       .setColor('#0A235B')
       .addFields(
-        { name: '/setup', value: 'Configure the ticket system (category & support role)', inline: false },
-        { name: '/panel', value: 'Create a ticket panel for users to open tickets', inline: false },
-        { name: '/ticket admin', value: 'List all open tickets', inline: false },
-        { name: '/ticket blacklist', value: 'Blacklist a user from creating tickets', inline: false },
-        { name: '/ticket unblacklist', value: 'Remove a user from the blacklist', inline: false },
-        { name: '/ticket list-blacklist', value: 'Show all blacklisted users', inline: false },
-        { name: '/ticket delete', value: 'Delete a ticket channel and save transcript', inline: false },
-        { name: '/ticket close-all', value: 'Close all open tickets', inline: false },
-        { name: '/ticket transcript', value: 'View saved transcripts for a user', inline: false }
+        { name: '⚙️ Setup Commands', value: '`/setup` - Configure ticket system (category, support role, transcript channel)\n`/panel` - Create ticket panel for users', inline: false },
+        { name: '🎫 Ticket Management', value: '`/ticket admin` - List all open tickets with numbers\n`/ticket delete <channel> <reason>` - Delete ticket with reason\n`/ticket close-all <reason>` - Close all tickets with reason', inline: false },
+        { name: '🚫 Blacklist Management', value: '`/ticket blacklist <user> <reason>` - Blacklist user\n`/ticket unblacklist <user>` - Remove from blacklist\n`/ticket list-blacklist` - View all blacklisted users', inline: false },
+        { name: '📜 Transcripts', value: '`/ticket transcript <user>` - View saved transcripts\nPublic transcripts posted to designated channel with view buttons', inline: false }
       )
-      .setFooter({ text: 'White House Systems Ticket Bot' });
+      .setFooter({ text: 'White House Systems Ticket Bot • Close reasons are required for all closures' });
 
     await interaction.reply({
       embeds: [embed],
