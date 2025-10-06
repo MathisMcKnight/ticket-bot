@@ -38,27 +38,30 @@ This is a Discord bot designed to manage support tickets within Discord servers.
 1. **Ticket Creation** - Users can create support tickets via interactive panel with automatic numbering
 2. **Ticket Numbering** - Automatic sequential ticket numbers (#1, #2, #3, etc.) displayed in channels and embeds
 3. **Ticket Type Tracking** - Tracks ticket types (General Inquiry, Support Request, Escalation)
-4. **HTML Transcript System** - Generates Discord Chat Exporter-style HTML transcripts with embedded CSS
-5. **Automatic DM Notifications** - Users receive transcript file and close reason via DM when tickets close
-6. **Public Transcript Channel** - HTML transcripts posted as downloadable files in designated channel
-7. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
-8. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
-9. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
-10. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
-11. **Channel Deletion** - Closed tickets are automatically deleted after transcript archiving
-12. **Transcript History** - View transcript metadata for any user with ticket numbers and close reasons
-13. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
+4. **Web-Based Transcripts** - Transcripts hosted on Express server, viewable directly in browser
+5. **One-Click Viewing** - Click "View Transcript" button to instantly open transcript in default browser
+6. **Automatic DM Notifications** - Users receive clickable transcript links via DM when tickets close
+7. **Public Transcript Channel** - Transcript links posted in designated channel with view buttons
+8. **Advanced Blacklist Management** - Blacklist users with reasons, view all blacklisted users, and unblacklist
+9. **Admin-Only Controls** - Close and Claim buttons require Administrator permissions (non-admins blocked)
+10. **Required Close Reasons** - Modal popup requires 5-500 character reason for all ticket closures
+11. **Ticket Management** - Close individual tickets, close all tickets at once, delete tickets with transcript
+12. **Channel Deletion** - Closed tickets are automatically deleted after transcript archiving
+13. **Transcript History** - View transcript metadata for any user with ticket numbers and close reasons
+14. **Server Configuration** - Admin command to set up ticket categories, roles, and transcript channel
 
 ### Database Schema
 - **tickets** - Stores ticket information (id, ticket_number, user_id, channel_id, status, ticket_type, created_at)
 - **configs** - Server configurations (guild_id, category_id, support_role_id, transcript_channel_id)
 - **blacklists** - Blacklisted users (user_id, reason, blacklisted_at)
-- **transcripts** - Complete message history (id, ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, closed_at)
+- **transcripts** - Transcript metadata (id, ticket_id, ticket_number, channel_id, user_id, user_tag, ticket_type, messages, close_reason, token, file_path, closed_at)
 
 ## Dependencies
 - `discord.js` (^14.22.1) - Discord API wrapper
 - `better-sqlite3` (^12.4.1) - SQLite database
 - `discord-html-transcripts` (^3.2.0) - HTML transcript generation
+- `express` (^4.x) - Web server for hosting transcripts
+- `uuid` (^11.x) - Unique token generation
 - `dotenv` (^17.2.3) - Environment variable management
 - `nodemon` (^3.1.10) - Development auto-reload
 
@@ -102,7 +105,37 @@ All commands require Administrator permissions:
 
 ## Recent Changes
 
-### 2025-10-06 (Latest Update): HTML Transcript System with DM Notifications
+### 2025-10-06 (Latest Update): Web-Based Transcript System
+- **🌐 Express Web Server**
+  - Added Express server running on port 5000 to host transcripts
+  - Transcripts accessible via secure token-based URLs
+  - Routes: GET /transcripts/:token for serving HTML files
+  
+- **🔗 Clickable Link Buttons**
+  - Replaced file attachments with ButtonStyle.Link buttons
+  - "View Transcript" button opens transcript in user's default browser
+  - Links work in DMs and transcript channel
+  - One-click access to full conversation history
+  
+- **🔐 Token-Based Access Control**
+  - UUID tokens generated for each transcript
+  - Unique index ensures no duplicate tokens
+  - Tokens stored in database with file paths
+  - Access validation before serving files
+  
+- **💾 File Storage System**
+  - HTML transcripts saved to /transcripts directory
+  - Files named with UUID tokens for security
+  - Database tracks token, file_path, and metadata
+  - Transcripts persist on disk for long-term access
+  
+- **✨ User Experience Improvements**
+  - Instant browser-based viewing (no downloads required)
+  - Works seamlessly across all devices
+  - Beautiful Discord Chat Exporter styling
+  - All messages, embeds, and attachments preserved
+
+### 2025-10-06 (Previous Update): HTML Transcript System with DM Notifications
 - **📄 Discord Chat Exporter HTML Transcripts**
   - Replaced text-based transcripts with HTML transcripts using discord-html-transcripts package
   - Transcripts styled in Discord Chat Exporter format with embedded CSS
