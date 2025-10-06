@@ -45,3 +45,30 @@ for (const file of eventFiles) {
 }
 
 client.login(process.env.DISCORD_TOKEN);
+
+// Express server for serving transcripts
+const express = require('express');
+const db = require('./database');
+const app = express();
+
+app.get('/transcripts/:token', (req, res) => {
+  const { token } = req.params;
+  
+  const transcript = db.prepare('SELECT * FROM transcripts WHERE token = ?').get(token);
+  
+  if (!transcript) {
+    return res.status(404).send('<h1>404 - Transcript Not Found</h1><p>This transcript does not exist or has been deleted.</p>');
+  }
+  
+  if (!transcript.file_path) {
+    return res.status(404).send('<h1>404 - Transcript File Missing</h1><p>The transcript file could not be found.</p>');
+  }
+  
+  res.sendFile(path.join(__dirname, transcript.file_path));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 Transcript server running on port ${PORT}`);
+  console.log(`📄 Transcripts accessible at: https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/:token`);
+});
