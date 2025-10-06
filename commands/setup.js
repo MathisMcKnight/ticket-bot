@@ -1,33 +1,59 @@
-﻿const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const db = require('../database');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription('Configure ticket system for this server')
-    .addChannelOption(opt =>
-      opt.setName('category').setDescription('Ticket category').setRequired(true)
-    )
-    .addRoleOption(opt =>
-      opt.setName('supportrole').setDescription('Support role').setRequired(true)
-    )
-    .addChannelOption(opt =>
-      opt.setName('transcriptchannel').setDescription('Channel for public transcripts').setRequired(true)
-    )
+    .setDescription('Configure ticket system - opens setup wizard')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
-    const category = interaction.options.getChannel('category');
-    const role = interaction.options.getRole('supportrole');
-    const transcriptChannel = interaction.options.getChannel('transcriptchannel');
+    const embed = new EmbedBuilder()
+      .setTitle('🎫 Ticket System Setup')
+      .setDescription('Click the buttons below to configure each ticket type and the transcript channel.\n\n**Setup Steps:**\n1. Configure General Inquiry\n2. Configure Press Clearance\n3. Configure Agency Hotline\n4. Configure Internal Affairs\n5. Configure Escalation & Transcript')
+      .setColor('#0A235B')
+      .addFields(
+        { name: '📋 How to find IDs', value: 'Enable Developer Mode in Discord settings, then right-click channels/roles and click "Copy ID"' }
+      );
 
-    db.prepare(
-      `INSERT OR REPLACE INTO configs (guild_id, category_id, support_role_id, transcript_channel_id) VALUES (?, ?, ?, ?)`
-    ).run(interaction.guild.id, category.id, role.id, transcriptChannel.id);
+    const row1 = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('setup_general_inquiry')
+        .setLabel('General Inquiry')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('📝'),
+      new ButtonBuilder()
+        .setCustomId('setup_press_clearance')
+        .setLabel('Press Clearance')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('📰')
+    );
+
+    const row2 = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('setup_agency_hotline')
+        .setLabel('Agency Hotline')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('📞'),
+      new ButtonBuilder()
+        .setCustomId('setup_internal_affairs')
+        .setLabel('Internal Affairs')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('🔒')
+    );
+
+    const row3 = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('setup_escalation_transcript')
+        .setLabel('Escalation & Transcript')
+        .setStyle(ButtonStyle.Success)
+        .setEmoji('⚡')
+    );
 
     await interaction.reply({
-      content: `✅ Configuration saved!\n📁 Category: ${category}\n👥 Role: ${role}\n📜 Transcript Channel: ${transcriptChannel}`,
-      ephemeral: true,
+      embeds: [embed],
+      components: [row1, row2, row3],
+      ephemeral: true
     });
   },
 };

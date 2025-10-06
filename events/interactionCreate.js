@@ -132,6 +132,141 @@ module.exports = {
         }
         await interaction.reply({ content: `🎟️ Ticket claimed by ${interaction.user.tag}` });
       }
+
+      if (interaction.customId === 'setup_general_inquiry') {
+        const modal = new ModalBuilder()
+          .setCustomId('modal_general_inquiry')
+          .setTitle('General Inquiry Setup');
+
+        const categoryInput = new TextInputBuilder()
+          .setCustomId('category_id')
+          .setLabel('Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(true);
+
+        const roleInput = new TextInputBuilder()
+          .setCustomId('role_id')
+          .setLabel('Manager Role ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click role → Copy ID')
+          .setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(categoryInput),
+          new ActionRowBuilder().addComponents(roleInput)
+        );
+
+        await interaction.showModal(modal);
+      }
+
+      if (interaction.customId === 'setup_press_clearance') {
+        const modal = new ModalBuilder()
+          .setCustomId('modal_press_clearance')
+          .setTitle('Press Clearance Setup');
+
+        const categoryInput = new TextInputBuilder()
+          .setCustomId('category_id')
+          .setLabel('Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(true);
+
+        const roleInput = new TextInputBuilder()
+          .setCustomId('role_id')
+          .setLabel('Manager Role ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click role → Copy ID')
+          .setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(categoryInput),
+          new ActionRowBuilder().addComponents(roleInput)
+        );
+
+        await interaction.showModal(modal);
+      }
+
+      if (interaction.customId === 'setup_agency_hotline') {
+        const modal = new ModalBuilder()
+          .setCustomId('modal_agency_hotline')
+          .setTitle('Agency Hotline Setup');
+
+        const categoryInput = new TextInputBuilder()
+          .setCustomId('category_id')
+          .setLabel('Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(true);
+
+        const roleInput = new TextInputBuilder()
+          .setCustomId('role_id')
+          .setLabel('Manager Role ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click role → Copy ID')
+          .setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(categoryInput),
+          new ActionRowBuilder().addComponents(roleInput)
+        );
+
+        await interaction.showModal(modal);
+      }
+
+      if (interaction.customId === 'setup_internal_affairs') {
+        const modal = new ModalBuilder()
+          .setCustomId('modal_internal_affairs')
+          .setTitle('Internal Affairs Setup');
+
+        const categoryInput = new TextInputBuilder()
+          .setCustomId('category_id')
+          .setLabel('Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(true);
+
+        const roleInput = new TextInputBuilder()
+          .setCustomId('role_id')
+          .setLabel('Manager Role ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click role → Copy ID')
+          .setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(categoryInput),
+          new ActionRowBuilder().addComponents(roleInput)
+        );
+
+        await interaction.showModal(modal);
+      }
+
+      if (interaction.customId === 'setup_escalation_transcript') {
+        const modal = new ModalBuilder()
+          .setCustomId('modal_escalation_transcript')
+          .setTitle('Escalation & Transcript Setup');
+
+        const escalationCategoryInput = new TextInputBuilder()
+          .setCustomId('escalation_category_id')
+          .setLabel('Escalation Category ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click category → Copy ID')
+          .setRequired(true);
+
+        const transcriptChannelInput = new TextInputBuilder()
+          .setCustomId('transcript_channel_id')
+          .setLabel('Transcript Channel ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Right-click channel → Copy ID')
+          .setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(escalationCategoryInput),
+          new ActionRowBuilder().addComponents(transcriptChannelInput)
+        );
+
+        await interaction.showModal(modal);
+      }
     }
 
     if (interaction.isModalSubmit() && interaction.customId === 'close_reason_modal') {
@@ -240,6 +375,86 @@ module.exports = {
         console.error('Error closing ticket:', error);
         await interaction.editReply({ content: '❌ Error closing ticket. Please try again.' });
       }
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'modal_general_inquiry') {
+      const db = require('../database');
+      const categoryId = interaction.fields.getTextInputValue('category_id');
+      const roleId = interaction.fields.getTextInputValue('role_id');
+
+      db.prepare(`
+        INSERT INTO configs (guild_id, general_inquiry_category_id, general_inquiry_role_id) 
+        VALUES (?, ?, ?)
+        ON CONFLICT(guild_id) DO UPDATE SET 
+          general_inquiry_category_id = excluded.general_inquiry_category_id,
+          general_inquiry_role_id = excluded.general_inquiry_role_id
+      `).run(interaction.guild.id, categoryId, roleId);
+
+      await interaction.reply({ content: '✅ General Inquiry configuration saved!', ephemeral: true });
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'modal_press_clearance') {
+      const db = require('../database');
+      const categoryId = interaction.fields.getTextInputValue('category_id');
+      const roleId = interaction.fields.getTextInputValue('role_id');
+
+      db.prepare(`
+        INSERT INTO configs (guild_id, press_clearance_category_id, press_clearance_role_id) 
+        VALUES (?, ?, ?)
+        ON CONFLICT(guild_id) DO UPDATE SET 
+          press_clearance_category_id = excluded.press_clearance_category_id,
+          press_clearance_role_id = excluded.press_clearance_role_id
+      `).run(interaction.guild.id, categoryId, roleId);
+
+      await interaction.reply({ content: '✅ Press Clearance configuration saved!', ephemeral: true });
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'modal_agency_hotline') {
+      const db = require('../database');
+      const categoryId = interaction.fields.getTextInputValue('category_id');
+      const roleId = interaction.fields.getTextInputValue('role_id');
+
+      db.prepare(`
+        INSERT INTO configs (guild_id, agency_hotline_category_id, agency_hotline_role_id) 
+        VALUES (?, ?, ?)
+        ON CONFLICT(guild_id) DO UPDATE SET 
+          agency_hotline_category_id = excluded.agency_hotline_category_id,
+          agency_hotline_role_id = excluded.agency_hotline_role_id
+      `).run(interaction.guild.id, categoryId, roleId);
+
+      await interaction.reply({ content: '✅ Agency Hotline configuration saved!', ephemeral: true });
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'modal_internal_affairs') {
+      const db = require('../database');
+      const categoryId = interaction.fields.getTextInputValue('category_id');
+      const roleId = interaction.fields.getTextInputValue('role_id');
+
+      db.prepare(`
+        INSERT INTO configs (guild_id, internal_affairs_category_id, internal_affairs_role_id) 
+        VALUES (?, ?, ?)
+        ON CONFLICT(guild_id) DO UPDATE SET 
+          internal_affairs_category_id = excluded.internal_affairs_category_id,
+          internal_affairs_role_id = excluded.internal_affairs_role_id
+      `).run(interaction.guild.id, categoryId, roleId);
+
+      await interaction.reply({ content: '✅ Internal Affairs configuration saved!', ephemeral: true });
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'modal_escalation_transcript') {
+      const db = require('../database');
+      const escalationCategoryId = interaction.fields.getTextInputValue('escalation_category_id');
+      const transcriptChannelId = interaction.fields.getTextInputValue('transcript_channel_id');
+
+      db.prepare(`
+        INSERT INTO configs (guild_id, escalation_category_id, transcript_channel_id) 
+        VALUES (?, ?, ?)
+        ON CONFLICT(guild_id) DO UPDATE SET 
+          escalation_category_id = excluded.escalation_category_id,
+          transcript_channel_id = excluded.transcript_channel_id
+      `).run(interaction.guild.id, escalationCategoryId, transcriptChannelId);
+
+      await interaction.reply({ content: '✅ Escalation & Transcript configuration saved!', ephemeral: true });
     }
 
   },
