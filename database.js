@@ -1,87 +1,90 @@
-﻿// database.js
-const Database = require('better-sqlite3');
-const db = new Database('./data.db');
+const { Pool } = require('pg');
 
-// Initialize tables if they don't exist
-db.exec(`
-  CREATE TABLE IF NOT EXISTS tickets (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ticket_number INTEGER,
-    user_id TEXT,
-    channel_id TEXT,
-    status TEXT,
-    ticket_type TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
-  CREATE TABLE IF NOT EXISTS configs (
-    guild_id TEXT PRIMARY KEY,
-    category_id TEXT,
-    support_role_id TEXT,
-    transcript_channel_id TEXT
-  );
-
-  CREATE TABLE IF NOT EXISTS blacklists (
-    user_id TEXT PRIMARY KEY,
-    reason TEXT,
-    blacklisted_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
-  CREATE TABLE IF NOT EXISTS transcripts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ticket_id INTEGER,
-    ticket_number INTEGER,
-    channel_id TEXT,
-    user_id TEXT,
-    user_tag TEXT,
-    ticket_type TEXT,
-    messages TEXT,
-    close_reason TEXT,
-    closed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ticket_id) REFERENCES tickets(id)
-  );
-`);
-
-// Migration: Add missing columns to existing tables
-const addColumnIfNotExists = (table, column, type) => {
+const initializeDatabase = async () => {
+  const client = await pool.connect();
   try {
-    const checkColumn = db.prepare(`PRAGMA table_info(${table})`).all();
-    const columnExists = checkColumn.some(col => col.name === column);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS tickets (
+        id SERIAL PRIMARY KEY,
+        ticket_number INTEGER UNIQUE,
+        user_id TEXT,
+        channel_id TEXT,
+        status TEXT,
+        ticket_type TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS configs (
+        guild_id TEXT PRIMARY KEY,
+        category_id TEXT,
+        support_role_id TEXT,
+        transcript_channel_id TEXT,
+        general_inquiry_category_id TEXT,
+        general_inquiry_role_id TEXT,
+        press_clearance_category_id TEXT,
+        press_clearance_role_id TEXT,
+        agency_hotline_category_id TEXT,
+        agency_hotline_role_id TEXT,
+        internal_affairs_category_id TEXT,
+        internal_affairs_role_id TEXT,
+        escalation_category_id TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS blacklists (
+        user_id TEXT PRIMARY KEY,
+        reason TEXT,
+        blacklisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS transcripts (
+        id SERIAL PRIMARY KEY,
+        ticket_id INTEGER,
+        ticket_number INTEGER,
+        channel_id TEXT,
+        user_id TEXT,
+        user_tag TEXT,
+        ticket_type TEXT,
+        messages TEXT,
+        close_reason TEXT,
+        token TEXT UNIQUE,
+        file_path TEXT,
+        closed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (ticket_id) REFERENCES tickets(id)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_transcripts_token ON transcripts(token);
+    `);
     
-    if (!columnExists) {
-      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
-      console.log(`✅ Added column ${column} to ${table}`);
-    }
+    console.log('✅ Database tables initialized');
   } catch (error) {
-    console.error(`Error adding column ${column} to ${table}:`, error.message);
+    console.error('❌ Database initialization error:', error);
+    throw error;
+  } finally {
+    client.release();
   }
 };
 
-// Add new columns if they don't exist
-addColumnIfNotExists('tickets', 'ticket_number', 'INTEGER');
-addColumnIfNotExists('tickets', 'ticket_type', 'TEXT');
-addColumnIfNotExists('configs', 'transcript_channel_id', 'TEXT');
-addColumnIfNotExists('transcripts', 'ticket_number', 'INTEGER');
-addColumnIfNotExists('transcripts', 'close_reason', 'TEXT');
-addColumnIfNotExists('transcripts', 'token', 'TEXT');
-addColumnIfNotExists('transcripts', 'file_path', 'TEXT');
+const db = {
+  query: async (text, params) => {
+    const start = Date.now();
+    try {
+      const res = await pool.query(text, params);
+      const duration = Date.now() - start;
+      return res;
+    } catch (error) {
+      console.error('Query error:', error);
+      throw error;
+    }
+  },
+  
+  pool
+};
 
-// Add ticket type-specific categories and roles
-addColumnIfNotExists('configs', 'general_inquiry_category_id', 'TEXT');
-addColumnIfNotExists('configs', 'general_inquiry_role_id', 'TEXT');
-addColumnIfNotExists('configs', 'press_clearance_category_id', 'TEXT');
-addColumnIfNotExists('configs', 'press_clearance_role_id', 'TEXT');
-addColumnIfNotExists('configs', 'agency_hotline_category_id', 'TEXT');
-addColumnIfNotExists('configs', 'agency_hotline_role_id', 'TEXT');
-addColumnIfNotExists('configs', 'internal_affairs_category_id', 'TEXT');
-addColumnIfNotExists('configs', 'internal_affairs_role_id', 'TEXT');
-addColumnIfNotExists('configs', 'escalation_category_id', 'TEXT');
-
-// Create unique index for token column if it doesn't exist
-try {
-  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_transcripts_token ON transcripts(token)`);
-} catch (error) {
-  console.error('Error creating unique index:', error.message);
-}
+initializeDatabase().catch(console.error);
 
 module.exports = db;
