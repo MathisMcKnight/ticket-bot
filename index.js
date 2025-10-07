@@ -51,24 +51,31 @@ const express = require('express');
 const db = require('./database');
 const app = express();
 
-app.get('/transcripts/:token', (req, res) => {
+app.get('/transcripts/:token', async (req, res) => {
   const { token } = req.params;
   
-  const transcript = db.prepare('SELECT * FROM transcripts WHERE token = ?').get(token);
-  
-  if (!transcript) {
-    return res.status(404).send('<h1>404 - Transcript Not Found</h1><p>This transcript does not exist or has been deleted.</p>');
+  try {
+    const result = await db.query('SELECT * FROM transcripts WHERE token = $1', [token]);
+    const transcript = result.rows[0];
+    
+    if (!transcript) {
+      return res.status(404).send('<h1>404 - Transcript Not Found</h1><p>This transcript does not exist or has been deleted.</p>');
+    }
+    
+    if (!transcript.file_path) {
+      return res.status(404).send('<h1>404 - Transcript File Missing</h1><p>The transcript file could not be found.</p>');
+    }
+    
+    res.sendFile(path.join(__dirname, transcript.file_path));
+  } catch (error) {
+    console.error('Error fetching transcript:', error);
+    res.status(500).send('<h1>500 - Internal Server Error</h1><p>An error occurred while fetching the transcript.</p>');
   }
-  
-  if (!transcript.file_path) {
-    return res.status(404).send('<h1>404 - Transcript File Missing</h1><p>The transcript file could not be found.</p>');
-  }
-  
-  res.sendFile(path.join(__dirname, transcript.file_path));
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
+  const domain = process.env.DOMAIN || process.env.REPLIT_DEV_DOMAIN || process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:5000';
   console.log(`🌐 Transcript server running on port ${PORT}`);
-  console.log(`📄 Transcripts accessible at: https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/:token`);
+  console.log(`📄 Transcripts accessible at: https://${domain}/transcripts/:token`);
 });
