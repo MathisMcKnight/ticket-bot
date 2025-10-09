@@ -8,7 +8,7 @@ This project is a Discord bot designed to provide a comprehensive support ticket
 **Project Ambition:** To be the go-to solution for Discord server ticket management, known for its advanced features, reliability, and ease of use.
 
 ## User Preferences
-I prefer simple language and direct answers. I like iterative development where we tackle features one by one. Please ask before making major architectural changes or deleting significant portions of code. I prefer detailed explanations for complex logic. Do not make changes to the `data.db` file directly.
+I prefer simple language and direct answers. I like iterative development where we tackle features one by one. Please ask before making major architectural changes or deleting significant portions of code. I prefer detailed explanations for complex logic.
 
 ## System Architecture
 
@@ -16,7 +16,7 @@ I prefer simple language and direct answers. I like iterative development where 
 The bot utilizes Discord's native UI elements like slash commands, buttons, and modals for interactions. It features an interactive setup wizard for easy configuration. Transcripts are web-based, accessible via clickable links, offering a consistent and modern viewing experience without downloads.
 
 ### Technical Implementations
-The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for local database management. Transcripts are generated as HTML files using `discord-html-transcripts` and served via an `Express` web server.
+The bot is built on Node.js using `discord.js` v14. It uses `PostgreSQL` with connection pooling for production-grade database management. Transcripts are generated as HTML files using `discord-html-transcripts` and served via an `Express` web server. All file paths use cross-platform compatible path.join() for Windows/Linux deployment.
 
 ### Feature Specifications
 1.  **Multi-Type Ticket System**: Supports four distinct ticket types (General Inquiry, Press Clearance, Agency Directorate Hotline, White House Internal Affairs Hotline) with dedicated categories and manager roles.
@@ -40,8 +40,22 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 
 ## External Dependencies
 -   `discord.js`: Discord API wrapper.
--   `better-sqlite3`: SQLite database driver.
+-   `pg`: PostgreSQL database driver with connection pooling.
 -   `discord-html-transcripts`: For generating HTML transcripts.
 -   `express`: Web server for hosting transcripts.
 -   `uuid`: For generating unique identifiers (e.g., transcript tokens).
 -   `dotenv`: For managing environment variables.
+
+## Deployment Options
+
+### Windows Home Server (Primary)
+Optimized for Windows deployment with batch scripts and PostgreSQL. See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for complete guide.
+
+**Quick Start:**
+1. Run `setup.bat` to install dependencies
+2. Configure `.env` file with credentials
+3. Run `start.bat` to launch bot
+4. Optional: Install as Windows Service with NSSM
+
+### Railway/Cloud
+For cloud deployment, see Railway Deployment section in WINDOWS_SETUP.md. Requires PostgreSQL addon and DOMAIN environment variable.
