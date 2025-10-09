@@ -10,6 +10,7 @@ const db = require('../database');
 const discordTranscripts = require('discord-html-transcripts');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs').promises;
+const path = require('path');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -166,7 +167,7 @@ module.exports = {
 
         const token = uuidv4();
         const fileName = `${token}.html`;
-        const filePath = `transcripts/${fileName}`;
+        const filePath = path.join('transcripts', fileName);
         
         await fs.writeFile(filePath, attachment.attachment);
 
@@ -272,7 +273,7 @@ module.exports = {
 
             const token = uuidv4();
             const fileName = `${token}.html`;
-            const filePath = `transcripts/${fileName}`;
+            const filePath = path.join('transcripts', fileName);
             
             await fs.writeFile(filePath, attachment.attachment);
 
