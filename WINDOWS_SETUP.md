@@ -178,7 +178,7 @@ Or use Windows Defender Firewall GUI:
 
 ### Bot Won't Start
 - Check `.env` file exists and has correct values
-- Verify PostgreSQL is running: `pg_isadmin -U postgres`
+- Verify PostgreSQL is running: `pg_isready -U postgres`
 - Check Node.js version: `node --version` (should be v20+)
 - View logs in Command Prompt for error details
 
