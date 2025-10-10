@@ -1,0 +1,58 @@
+> ticket-bot@1.0.0 start
+> node index.js
+
+[dotenv@17.2.3] injecting env (6) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Registering guild commands...
+🌐 Transcript server running on port 5000
+📄 Transcripts accessible at: https://transcripts.thetruthcartel.com/transcripts/:token
+✅ Database tables initialized
+Registered guild commands.
+✅ Logged in as White House Systems#6787
+(node:12448) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:12448) Warning: Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+DiscordAPIError[10062]: Unknown interaction
+    at handleErrors (C:\ticket-bot\node_modules\@discordjs\rest\dist\index.js:762:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async BurstHandler.runRequest (C:\ticket-bot\node_modules\@discordjs\rest\dist\index.js:866:23)
+    at async _REST.request (C:\ticket-bot\node_modules\@discordjs\rest\dist\index.js:1307:22)
+    at async StringSelectMenuInteraction.reply (C:\ticket-bot\node_modules\discord.js\src\structures\interfaces\InteractionResponses.js:193:22)
+Emitted 'error' event on Client instance at:
+    at emitUnhandledRejectionOrErr (node:events:402:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:92:21) {
+  requestBody: {
+    files: [],
+    json: {
+      type: 4,
+      data: {
+        content: '⚙️ Run `/setup` first.',
+        tts: false,
+        nonce: undefined,
+        enforce_nonce: false,
+        embeds: undefined,
+        components: undefined,
+        username: undefined,
+        avatar_url: undefined,
+        allowed_mentions: undefined,
+        flags: 64,
+        message_reference: undefined,
+        attachments: undefined,
+        sticker_ids: undefined,
+        thread_name: undefined,
+        applied_tags: undefined,
+        poll: undefined
+      }
+    }
+  },
+  rawError: { message: 'Unknown interaction', code: 10062 },
+  code: 10062,
+  status: 404,
+  method: 'POST',
+  url: 'https://discord.com/api/v10/interactions/1426036784084684822/aW50ZXJhY3Rpb246MTQyNjAzNjc4NDA4NDY4NDgyMjpYZEJIS1hrTGY4Tkw1MUZvYjdkWVBQQVZGeGdQbjFmcUJodUlUZHJwYVFUZVhuMTdsWGZFRTYxSU84THFIUXRoRWhoM2N6RHRhbW05c3VrUUJDeFJwMUtCWmZvMnY0QlNLa2ZrRE03UVJqalVaNUxLQU9QQ1I3OHNyYUVrd0sxMg/callback?with_response=false'
+}
+
+Node.js v22.20.0

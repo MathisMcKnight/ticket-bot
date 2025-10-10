@@ -22,21 +22,22 @@ module.exports = {
       const choice = interaction.values[0];
       const db = require('../database');
 
+      await interaction.deferReply({ ephemeral: true });
+
       try {
         const configResult = await db.query(`SELECT * FROM configs WHERE guild_id = $1`, [interaction.guild.id]);
         const config = configResult.rows[0];
         
         if (!config) {
-          return interaction.reply({ content: '⚙️ Run `/setup` first.', ephemeral: true });
+          return interaction.editReply({ content: '⚙️ Run `/setup` first.' });
         }
 
         const blResult = await db.query(`SELECT * FROM blacklists WHERE user_id = $1`, [interaction.user.id]);
         const bl = blResult.rows[0];
         
         if (bl) {
-          return interaction.reply({ 
-            content: `🚫 You are blacklisted.\n**Reason:** ${bl.reason || 'No reason provided'}`, 
-            ephemeral: true 
+          return interaction.editReply({ 
+            content: `🚫 You are blacklisted.\n**Reason:** ${bl.reason || 'No reason provided'}`
           });
         }
 
@@ -65,7 +66,7 @@ module.exports = {
       const roleId = roleMapping[choice];
 
       if (!categoryId || !roleId) {
-        return interaction.reply({ content: `⚠️ This ticket type is not configured yet. Please ask an admin to run /setup.`, ephemeral: true });
+        return interaction.editReply({ content: `⚠️ This ticket type is not configured yet. Please ask an admin to run /setup.` });
       }
 
       const lastTicketResult = await db.query(`SELECT MAX(ticket_number) as max_num FROM tickets`, []);
@@ -102,10 +103,10 @@ module.exports = {
       );
 
       await channel.send({ content: `<@&${roleId}>`, embeds: [embed], components: [row] });
-      await interaction.reply({ content: `✅ Ticket created: ${channel}`, ephemeral: true });
+      await interaction.editReply({ content: `✅ Ticket created: ${channel}` });
       } catch (error) {
         console.error('Error creating ticket:', error);
-        await interaction.reply({ content: '❌ Error creating ticket. Please try again.', ephemeral: true });
+        await interaction.editReply({ content: '❌ Error creating ticket. Please try again.' });
       }
     }
 
