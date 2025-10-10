@@ -8,7 +8,7 @@ This project is a Discord bot designed to provide a comprehensive support ticket
 **Project Ambition:** To be the go-to solution for Discord server ticket management, known for its advanced features, reliability, and ease of use.
 
 ## User Preferences
-I prefer simple language and direct answers. I like iterative development where we tackle features one by one. Please ask before making major architectural changes or deleting significant portions of code. I prefer detailed explanations for complex logic. Do not make changes to the `data.db` file directly.
+I prefer simple language and direct answers. I like iterative development where we tackle features one by one. Please ask before making major architectural changes or deleting significant portions of code. I prefer detailed explanations for complex logic.
 
 ## System Architecture
 
@@ -16,7 +16,7 @@ I prefer simple language and direct answers. I like iterative development where 
 The bot utilizes Discord's native UI elements like slash commands, buttons, and modals for interactions. It features an interactive setup wizard for easy configuration. Transcripts are web-based, accessible via clickable links, offering a consistent and modern viewing experience without downloads.
 
 ### Technical Implementations
-The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for local database management. Transcripts are generated as HTML files using `discord-html-transcripts` and served via an `Express` web server.
+The bot is built on Node.js using `discord.js` v14. It uses `PostgreSQL` with connection pooling via the `pg` driver for production-grade database management. Transcripts are generated as HTML files using `discord-html-transcripts` and served via an `Express` web server.
 
 ### Feature Specifications
 1.  **Multi-Type Ticket System**: Supports four distinct ticket types (General Inquiry, Press Clearance, Agency Directorate Hotline, White House Internal Affairs Hotline) with dedicated categories and manager roles.
@@ -44,7 +44,7 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 
 ## External Dependencies
 -   `discord.js`: Discord API wrapper.
--   `better-sqlite3`: SQLite database driver.
+-   `pg`: PostgreSQL database driver with connection pooling.
 -   `discord-html-transcripts`: For generating HTML transcripts.
 -   `express`: Web server for hosting transcripts.
 -   `uuid`: For generating unique identifiers (e.g., transcript tokens).
@@ -52,10 +52,28 @@ The bot is built on Node.js using `discord.js` v14. It uses `better-sqlite3` for
 
 ## Deployment
 
-### Docker Deployment
-The project is fully Dockerized for easy deployment:
+### Railway Deployment (Recommended)
+The bot is optimized for Railway deployment with PostgreSQL:
 
-**Using Docker Compose (Recommended):**
+1. **Create a new Railway project**
+2. **Add PostgreSQL database:**
+   - Click "New" → "Database" → "Add PostgreSQL"
+   - Railway automatically creates a `DATABASE_URL` environment variable
+3. **Deploy the bot:**
+   - Connect your GitHub repository
+   - Railway auto-detects the Dockerfile
+4. **Set environment variables:**
+   - `DISCORD_TOKEN` - Your Discord bot token
+   - `CLIENT_ID` - Your Discord application client ID
+   - `GUILD_ID` - Your Discord server (guild) ID
+   - `DOMAIN` - Your Railway app's public domain (e.g., `your-app.up.railway.app`)
+   - `DATABASE_URL` - Auto-set by Railway PostgreSQL addon
+5. **Deploy and monitor** - Bot will auto-deploy on push
+
+### Docker Deployment (Alternative)
+The project is fully Dockerized for self-hosted deployment:
+
+**Using Docker Compose:**
 ```bash
 docker-compose up -d
 ```
@@ -68,12 +86,19 @@ docker build -t ticket-bot .
 # Run the container
 docker run -d \
   -p 5000:5000 \
-  -v $(pwd)/data.db:/app/data.db \
   -v $(pwd)/transcripts:/app/transcripts \
+  -e DATABASE_URL="postgresql://user:password@host:5432/dbname" \
   --env-file .env \
   --name ticket-bot \
   ticket-bot
 ```
+
+**Required Environment Variables:**
+- `DISCORD_TOKEN` - Discord bot token
+- `CLIENT_ID` - Discord application client ID
+- `GUILD_ID` - Discord server ID
+- `DOMAIN` - Public domain for transcript URLs
+- `DATABASE_URL` - PostgreSQL connection string
 
 **Files:**
 - `Dockerfile` - Container build configuration
@@ -81,7 +106,6 @@ docker run -d \
 - `.dockerignore` - Excludes unnecessary files from build
 
 **Volumes:**
-- `data.db` - Persisted database
 - `transcripts/` - Persisted HTML transcripts
 
 **Port:** 5000 (transcript server)
