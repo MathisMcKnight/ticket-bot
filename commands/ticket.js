@@ -219,7 +219,7 @@ module.exports = {
 
         await db.query(`UPDATE tickets SET status = 'deleted' WHERE channel_id = $1`, [channel.id]);
 
-        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const transcriptUrl = `https://${process.env.DOMAIN}/transcripts/${token}`;
         const viewButton = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setLabel('📄 View Transcript')
@@ -329,7 +329,7 @@ module.exports = {
                 filePath
               ]);
 
-            const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+            const transcriptUrl = `https://${process.env.DOMAIN}/transcripts/${token}`;
             const viewButton = new ActionRowBuilder().addComponents(
               new ButtonBuilder()
                 .setLabel('📄 View Transcript')

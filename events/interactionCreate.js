@@ -327,7 +327,7 @@ module.exports = {
 
         await db.query(`UPDATE tickets SET status = 'closed' WHERE channel_id = $1`, [interaction.channel.id]);
 
-        const transcriptUrl = `https://${process.env.REPLIT_DEV_DOMAIN}/transcripts/${token}`;
+        const transcriptUrl = `https://${process.env.DOMAIN}/transcripts/${token}`;
         const viewButton = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setLabel('📄 View Transcript')
