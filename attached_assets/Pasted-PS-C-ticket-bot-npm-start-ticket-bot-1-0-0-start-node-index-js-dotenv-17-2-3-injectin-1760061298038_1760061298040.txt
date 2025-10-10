@@ -1,0 +1,34 @@
+PS C:\ticket-bot> npm start
+
+> ticket-bot@1.0.0 start
+> node index.js
+
+[dotenv@17.2.3] injecting env (6) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+Registering guild commands...
+🌐 Transcript server running on port 5000
+📄 Transcripts accessible at: https://transcripts.thetruthcartel.com/transcripts/:token
+Registered guild commands.
+✅ Logged in as White House Systems#6787
+(node:10064) DeprecationWarning: The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✅ Database tables initialized
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+TypeError: db.prepare is not a function
+    at Object.execute (C:\ticket-bot\events\interactionCreate.js:24:25)
+    at Client.<anonymous> (C:\ticket-bot\index.js:44:49)
+    at Client.emit (node:events:519:28)
+    at InteractionCreateAction.handle (C:\ticket-bot\node_modules\discord.js\src\client\actions\InteractionCreate.js:101:12)
+    at module.exports [as INTERACTION_CREATE] (C:\ticket-bot\node_modules\discord.js\src\client\websocket\handlers\INTERACTION_CREATE.js:4:36)
+    at WebSocketManager.handlePacket (C:\ticket-bot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:352:31)
+    at WebSocketManager.<anonymous> (C:\ticket-bot\node_modules\discord.js\src\client\websocket\WebSocketManager.js:236:12)
+    at WebSocketManager.emit (C:\ticket-bot\node_modules\@vladfrangu\async_event_emitter\dist\index.cjs:2504:31)
+    at WebSocketShard.<anonymous> (C:\ticket-bot\node_modules\@discordjs\ws\dist\index.js:1190:51)
+    at WebSocketShard.emit (C:\ticket-bot\node_modules\@vladfrangu\async_event_emitter\dist\index.cjs:2504:31)
+Emitted 'error' event on Client instance at:
+    at emitUnhandledRejectionOrErr (node:events:402:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:92:21)
+
+Node.js v22.20.0
